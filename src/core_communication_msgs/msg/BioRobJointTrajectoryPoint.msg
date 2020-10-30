@@ -1,0 +1,6 @@
+trajectory_msgs/JointTrajectoryPoint trajectoryPoint
+GripperAction gripperAction
+float64 reachingAccuracyCart
+float64 reachingAccuracyOrient
+float64 reachingAccuracyJoint
+float64 controlLoopRatio

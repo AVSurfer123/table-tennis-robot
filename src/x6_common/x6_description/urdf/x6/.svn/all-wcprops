@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/!svn/ver/977/trunk/biorob_common/biorob_description/urdf/biorob_v3_x6
+END
+biorob_v3_x6_base.urdf.xacro
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/!svn/ver/977/trunk/biorob_common/biorob_description/urdf/biorob_v3_x6/biorob_v3_x6_base.urdf.xacro
+END
+biorob_v3_x6.urdf.xacro
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/!svn/ver/758/trunk/biorob_common/biorob_description/urdf/biorob_v3_x6/biorob_v3_x6.urdf.xacro
+END
+biorob_v3_x6.xml
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/!svn/ver/758/trunk/biorob_common/biorob_description/urdf/biorob_v3_x6/biorob_v3_x6.xml
+END

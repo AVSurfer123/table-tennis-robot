@@ -1,0 +1,5 @@
+bool connect_disconnect_robot
+bool shutdown_system
+bool connect_over_ethercat
+bool value
+string comment

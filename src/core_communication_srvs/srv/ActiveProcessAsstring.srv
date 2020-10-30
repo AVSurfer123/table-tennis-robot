@@ -1,0 +1,7 @@
+# request fields
+#empty
+---
+#response fields
+string process
+int32 activeId
+bool repeat

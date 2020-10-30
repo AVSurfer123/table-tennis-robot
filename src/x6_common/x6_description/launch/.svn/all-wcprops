@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/!svn/ver/862/trunk/biorob_common/biorob_description/launch
+END
+xacrodisplay_common.launch
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/!svn/ver/862/trunk/biorob_common/biorob_description/launch/xacrodisplay_common.launch
+END
+xacrodisplay_biorob_ultra_x5_ug.launch
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/!svn/ver/758/trunk/biorob_common/biorob_description/launch/xacrodisplay_biorob_ultra_x5_ug.launch
+END
+xacrodisplay_biorob_ultra_x5_hg.launch
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/!svn/ver/758/trunk/biorob_common/biorob_description/launch/xacrodisplay_biorob_ultra_x5_hg.launch
+END
+xacrodisplay_biorob_ultra_x4.launch
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/!svn/ver/758/trunk/biorob_common/biorob_description/launch/xacrodisplay_biorob_ultra_x4.launch
+END
+xacrodisplay_biorob_v3_x4.launch
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/!svn/ver/758/trunk/biorob_common/biorob_description/launch/xacrodisplay_biorob_v3_x4.launch
+END
+xacrodisplay_biorob_ultra_x6.launch
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/!svn/ver/758/trunk/biorob_common/biorob_description/launch/xacrodisplay_biorob_ultra_x6.launch
+END
+xacrodisplay_biorob_v3_x6.launch
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/!svn/ver/758/trunk/biorob_common/biorob_description/launch/xacrodisplay_biorob_v3_x6.launch
+END
+xacrodisplay_biorob_ultra_x4_hp.launch
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/!svn/ver/758/trunk/biorob_common/biorob_description/launch/xacrodisplay_biorob_ultra_x4_hp.launch
+END

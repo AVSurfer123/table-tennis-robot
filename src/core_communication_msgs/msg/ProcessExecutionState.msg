@@ -1,0 +1,3 @@
+bool process_paused
+bool process_running
+bool process_finished

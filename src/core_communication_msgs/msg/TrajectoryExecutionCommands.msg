@@ -1,0 +1,7 @@
+bool startTrajectory
+bool stopTrajectory
+bool finishTrajectory
+bool pauseTrajectory
+bool resumeTrajectory
+bool clearTrajectory
+bool finishGripperAction

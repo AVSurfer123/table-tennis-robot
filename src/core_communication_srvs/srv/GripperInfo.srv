@@ -1,0 +1,8 @@
+# request fields
+#empty
+---
+#response fields
+bool isGripperInstalled
+float64 minimumOpening
+float64 maximumOpening
+float64 noMovementTimeout

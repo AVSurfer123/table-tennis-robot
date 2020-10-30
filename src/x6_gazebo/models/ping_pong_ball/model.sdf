@@ -1,0 +1,54 @@
+<?xml version="1.0" ?>
+<sdf version="1.4">
+  <model name="Ping Pong Ball">
+    <static>false</static>
+
+    <link name="ball">
+      <inertial>
+        <!--><mass>0.0027</mass><\!-->
+        <mass>0.0027</mass>
+        <!-- inertia based on solid sphere 2/5 mr^2 -->
+        <inertia>
+          <ixx>2.37e-8</ixx>
+          <iyy>2.37e-8</iyy>
+          <izz>2.37e-8</izz>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyz>0</iyz>
+        </inertia>
+      </inertial>
+      <collision name="collision">
+        <geometry>
+          <sphere>
+            <radius>0.0200</radius>
+          </sphere>
+        </geometry>
+	<surface>
+	  <bounce>
+	    <restitution_coefficient>100.0 </restitution_coefficient>
+	    <threshold>0.01</threshold>
+	  </bounce>
+    <contact>
+      <ode>
+        <max_vel>500</max_vel>
+      </ode>
+    </contact>
+	</surface>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <sphere>
+            <radius>0.0200</radius>
+          </sphere>
+        </geometry>
+        <material>
+          <script>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Orange</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+
+  </model>
+</sdf>

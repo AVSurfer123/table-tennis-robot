@@ -1,0 +1,14 @@
+<stack>
+  <description brief="biorob_common">
+    URDF description of the robot kinematics and dynamics, 3D models of robot components
+    </description>
+  <author>Stefan Kohlbrecher</author>
+  <license>BSD</license>  
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/biorob_common</url>
+  <depend stack="ros" />
+  <depend stack="xacro" /> <!-- xacro -->
+  <depend stack="robot_model" />
+  <depend stack="pr2_simulator" /> <!-- For libgazebo_ros_controller_manager -->
+
+</stack>

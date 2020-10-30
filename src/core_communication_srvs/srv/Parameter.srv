@@ -1,0 +1,6 @@
+# request fields
+bool setParameter
+core_communication_msgs/Parameter[] parameters #if "setParameter" == 1, then the list of parameters will be set
+---
+# response fields
+core_communication_msgs/Parameter[] parameters # list of all parameters (after they are set)

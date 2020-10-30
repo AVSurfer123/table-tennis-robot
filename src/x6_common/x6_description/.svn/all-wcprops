@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/!svn/ver/977/trunk/biorob_common/biorob_description
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/!svn/ver/758/trunk/biorob_common/biorob_description/CMakeLists.txt
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/!svn/ver/758/trunk/biorob_common/biorob_description/Makefile
+END
+manifest.xml
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/!svn/ver/758/trunk/biorob_common/biorob_description/manifest.xml
+END
+mainpage.dox
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/!svn/ver/758/trunk/biorob_common/biorob_description/mainpage.dox
+END
