@@ -7,13 +7,15 @@
       <gravity>false</gravity>
        <visual name="visual1">
           <geometry>
-            <mesh><uri>file:///home/carlos/.gazebo/models/table/table.dae</uri></mesh>
+            <mesh><uri>file://~/table-tennis-robot/src/x6_gazebo/models/table2/table.dae</uri></mesh>
+            <!-- <mesh><uri>model://table.dae</uri></mesh> -->
             <!-->Model taken from https://3dwarehouse.sketchup.com/model.html?id=b34982af1d6e18736b4393ff6e4e0f88 <\!-->
           </geometry>
         </visual>
         <collision name="collision1">
           <geometry>
-            <mesh><uri>file:///home/carlos/.gazebo/models/table/table.dae</uri></mesh>
+            <mesh><uri>file://~/table-tennis-robot/src/x6_gazebo/models/table2/table.dae</uri></mesh>
+            <!-- <mesh><uri>model://table.dae</uri></mesh> -->
             <!--><box><size>1.0 1.0 1.0</size></box> <\!-->
           </geometry>
         </collision>
