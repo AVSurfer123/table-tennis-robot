@@ -1,3 +1,9 @@
+.vscode/*
+
+# Catkin files
+.catkin_workspace
+
+# ROS build files
 devel/
 logs/
 build/
