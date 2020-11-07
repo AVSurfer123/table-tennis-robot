@@ -5,18 +5,17 @@
     <!-- more default parameters can be changed here -->
   </include>
 
-<!-- Convert an xacro and put on parameter server -->
-<param name="robot_description" command="$(find xacro)/xacro.py $(find x6_description)/urdf/x6/x6.urdf.xacro" />
+  <!-- Convert an xacro and put on parameter server -->
+  <param name="robot_description" command="$(find xacro)/xacro.py $(find x6_description)/urdf/x6/x6.urdf.xacro" />
 
-<!-- Spawn a robot into Gazebo -->
-<node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -y 0.2 -z 0.762 -model x6" />
+  <!-- Spawn a robot into Gazebo -->
+  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -y 0.2 -z 0.762 -model x6" />
 
- <include file="$(find x6_control)/launch/x6_control.launch">
- </include>
+  <include file="$(find x6_control)/launch/x6_control.launch">
+  </include>
 
-
-
-<node pkg="topic_tools" type="throttle" name="throttle_sensor" args="messages /gazebo/model_states 120" />
+  <!-- Throttles the rate of Gazebo updates -->
+  <node pkg="topic_tools" type="throttle" name="throttle_sensor" args="messages /gazebo/model_states 120" />
 
 
 <!-- node pkg="optitrack_sim_tools" type="perfect_tracker.py" name="ball_sim"/ -->
