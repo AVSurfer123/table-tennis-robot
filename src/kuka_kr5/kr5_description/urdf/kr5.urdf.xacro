@@ -175,7 +175,7 @@
 
   <!-- tool link -->
   <!-- This frame corresponds to the $FLANGE coordinate system in KUKA KRC controllers. -->
-  <xacro:if value="$(arg use_the_plate)">
+  
      <link name="${prefix}ee_link">
         <inertial>
            <origin xyz="0.00983949894991115 -2.78372724487979E-05 -1.11022302462516E-15" rpy="0 0 0" />
@@ -183,19 +183,19 @@
            <inertia ixx="0.0138" ixy="0" ixz="0" iyy="0.0138" iyz="0" izz="0.0217" /> <!-- ${0.08333333333*plate_mass*plate_width}-->
         </inertial>
         <visual>
-           <origin xyz="0 0 0" rpy="0 0 0" />
+           <origin xyz="0.075 0 0.27" rpy="0 3.1415 0" />
            <geometry>
-              <mesh filename="package://kr5_description/meshes/tools/plate_40.stl" scale="0.01 0.01 0.01" /> <!-- plate is 20x20x1cm if scale is 0.01 -->
+              <mesh filename="package://kr5_description/meshes/tools/paddle.stl" scale="0.001 0.001 0.001" /> <!-- plate is 20x20x1cm if scale is 0.01 -->
            </geometry>
         </visual>
         <collision>
-           <origin xyz="0 0 0" rpy="0 0 0" />
+           <origin xyz="0.075 0 0.27" rpy="0 3.1415 0" />
            <geometry>
-              <mesh filename="package://kr5_description/meshes/tools/plate_40.stl" scale="0.01 0.01 0.01" /> <!-- plate is 20x20x1 m -->
+              <mesh filename="package://kr5_description/meshes/tools/paddle.stl" scale="0.001 0.001 0.001" /> <!-- plate is 20x20x1 m -->
            </geometry>
         </collision>
      </link>
-  </xacro:if>
+  
 
   <!-- joints: -->
   <joint name="${prefix}joint_a1" type="revolute">

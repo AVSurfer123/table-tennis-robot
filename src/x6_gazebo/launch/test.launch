@@ -1,9 +1,79 @@
+<?xml version="1.0"?>
 <launch>
+  <arg name="start_kuka" default="True" />
+  <arg name="robot_name" default="kuka" />
+  <arg name="use_ros_control" default="True" /> <!-- in case of true use the ros controller plugin with update rate etc. set it to false if you wanna use it with moveIt! -->
+  <arg name="motors_controller_type" default="EffortJointInterface" /> <!-- PositionJointInterface EffortJointInterface, velocity, position set it just for link 4 and 5-->
 
-  <arg name="world_file"  default="$(env TURTLEBOT_GAZEBO_WORLD_FILE)"/>
-  
+  <arg name="start_rviz" default="False" />
+  <arg name="move_arm" default="True" /> <!-- moves arm once after ... seconds -->
+  <arg name="move_arm_to" default="zero" /> <!-- zero or freaky state top -->
+
+
+
+    <!-- Ball: -->
+    <arg name="use_ball" default="True" />
+    <arg name="ball_name" default="ball" />
+    <arg name="ball_x_pos" default="1.4" /> <!-- 1.4 (for zero state) -->
+    <arg name="ball_y_pos" default="0.0" /> <!-- world y= x(frame) (for zero state!) -->
+    <arg name="ball_z_pos" default="0.66" />   <!-- 0.67 (for zero state), 1.76 (top) -->
+
+  <!-- these are the arguments you can pass this launch file, for example paused:=true -->
+  <arg name="paused" default="false"/>
+  <arg name="use_sim_time" default="true"/>
+  <arg name="gui" default="true"/>
+  <arg name="headless" default="false"/>
+  <arg name="debug" default="false"/>
+
+  <!-- We resume the logic in empty_world.launch -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="world_name" value="$(arg world_file)"/>
+    <arg name="world_name" value="$(find x6_gazebo)/worlds/gz5_arm.world"/>
+    <!-- more default parameters can be changed here -->
+    <arg name="debug" value="$(arg debug)" />
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="paused" value="$(arg paused)"/>
+    <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+    <arg name="headless" value="$(arg headless)"/>
   </include>
 
+<group if="$(arg start_kuka)">
+  <include file="$(find kr5_description)/launch/kr5_upload.launch">
+     <arg name="robot_name" value="$(arg robot_name)" />
+     <arg name="use_ros_control" value="$(arg use_ros_control)" />
+     <arg name="motors_controller_type" value="$(arg motors_controller_type)" />
+  </include>
+
+  <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot
+       Note: set x, y, z to 0 otherwise rviz and gazebo position do not match!!! -->
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+        args="-urdf -model $(arg robot_name) -param robot_description -x 0.0 -y 0.5 -z 0.762"/>
+
+  <include file="$(find kuka_kr5_control)/launch/manipulator_control.launch">
+     <arg name="robot_name" value="$(arg robot_name)" />
+     <arg name="motors_controller_type" value="$(arg motors_controller_type)" />
+  </include>
+
+  <!-- start the controller_node to control the plate's position for example -->
+  <include file="$(find kuka_kr5_control)/launch/start_control_node.launch">
+     <arg name="motors_controller_type" value="$(arg motors_controller_type)" />
+  </include>
+</group>
+
+
+
+    <!--   switch control mode -->
+    <group if="$(arg move_arm)">
+      <node pkg="kuka_kr5_gazebo" type="timed_roslaunch.sh"
+        args="20 kuka_kr5_gazebo switch_to_continuous_effort_control_mode.launch
+          move_arm_to:=switch"
+        name="switch_to_continuous_effort_control" output="screen">
+      </node>
+    </group>
+
+<group if="$(arg start_rviz)">
+   <node pkg="rviz" type="rviz" name="rviz" args="-d $(find kuka_kr5_gazebo)/config/rviz_gz.rviz" />
+</group>
+
 </launch>
+
+
