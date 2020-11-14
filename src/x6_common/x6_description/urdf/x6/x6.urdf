@@ -312,7 +312,7 @@
     <axis xyz="0 0 1"/>
     <origin rpy="-1.5707963268 0 0" xyz="0 0 -0.311"/>
     <!--<origin xyz="0 0 ${-j3_length - j4_length}" rpy="${-pi/2} ${pi/2} 0"/>-->
-    <limit effort="30.0" lower="-1.57" upper="1.57" velocity="2.617"/>
+    <limit effort="30.0" lower="-1.6" upper="1.6" velocity="2.617"/>
     <!-- <limit effort="0.1" lower="0.01" upper="0.01" velocity="0.1"/> -->
     <!--<dynamics damping="1.0" friction="1.0"/>-->
   </joint>
@@ -321,7 +321,7 @@
     <child link="x6_link6"/>
     <axis xyz="0 0 1"/>
     <origin rpy="-1.5707963268 0 0" xyz="0 0.126 0.018"/>
-    <limit effort="10.0" lower="-1.57" upper="1.57" velocity="2.617"/>
+    <limit effort="10.0" lower="-1.6" upper="1.6" velocity="2.617"/>
     <!-- TODO: give correct effort limits -->
     <dynamics damping="1.0" friction="1.0"/>
   </joint>
