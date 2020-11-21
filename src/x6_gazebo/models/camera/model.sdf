@@ -3,7 +3,7 @@
   <model name="camera">
     <link name="link">
       <gravity>0</gravity>
-      <pose>0.0 0.0 5.0 1.5 1.5 0</pose>
+      <pose>0.01 -1.6 3.5 1.5 1.65 1.47</pose>
       <inertial>
         <mass>0.1</mass>
         <inertia>
@@ -30,8 +30,8 @@
         <camera>
           <horizontal_fov>1.047</horizontal_fov>
           <image>
-            <width>320</width>
-            <height>240</height>
+            <width>720</width>
+            <height>480</height>
           </image>
           <clip>
             <near>0.1</near>
