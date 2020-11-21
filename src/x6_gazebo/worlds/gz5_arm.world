@@ -16,7 +16,7 @@
     <include>
       <uri>model://ping_pong_ball</uri>
       <name>ping_pong_ball</name>
-      <pose>0 -0.5 1 0 0 0</pose>
+      <pose>0 -2.5 1 0 0 0</pose>
     </include>
 
     <include>

@@ -50,5 +50,14 @@
       </visual>
     </link>
 
+    <plugin name="random" filename="libRandomVelocityPlugin.so">
+
+        <!-- Name of the link in this model that receives the velocity -->
+        <link>ball</link>
+
+        <!-- Initial velocity that is applied to the link -->
+        <initial_velocity>0 0.5 0</initial_velocity>
+      </plugin>
+
   </model>
 </sdf>
