@@ -14,12 +14,6 @@
     </include>
 
     <include>
-      <uri>model://ping_pong_ball</uri>
-      <name>ping_pong_ball</name>
-      <pose>0 -0.5 1 0 0 0</pose>
-    </include>
-
-    <include>
       <uri>model://table2</uri>
       <name>ping_pong_table_part2</name>
       <pose>0.677840 -0.207846 0.0 0 0 3.141592654</pose>
