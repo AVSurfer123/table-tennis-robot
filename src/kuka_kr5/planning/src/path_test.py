@@ -10,7 +10,8 @@ import numpy as np
 import traceback
 import moveit_commander
 
-from moveit_msgs.msg import OrientationConstraint, Constraints, CollisionObject
+from moveit_msgs.msg import OrientationConstraint, Constraints, CollisionObject, RobotTrajectory
+from trajectory_msgs.msg import JointTrajectoryPoint
 from geometry_msgs.msg import PoseStamped
 
 group_name = "kr5_planning_group"
@@ -40,6 +41,7 @@ def main():
 
     # Set maximum velocity scaling
     group.set_max_velocity_scaling_factor(1.0)
+    group.set_max_acceleration_scaling_factor(1.0)
     
 
 	# K values for Part 5
@@ -91,17 +93,36 @@ def main():
                 constraints.orientation_constraints = orien_const
                 group.set_path_constraints(constraints)
 
-                plan = group.plan()
+                traj = group.plan()
+
+
+                new_traj = RobotTrajectory()
+                new_traj.joint_trajectory.header = traj.joint_trajectory.header
+                new_traj.joint_trajectory.joint_names = traj.joint_trajectory.joint_names
+                n_joints = len(traj.joint_trajectory.joint_names)
+                n_points = len(traj.joint_trajectory.points)
+                spd = 5.0
+                print(traj.joint_trajectory.points)
+
+                for i in range(n_points):
+                    new_traj.joint_trajectory.points.append(JointTrajectoryPoint())
+                    new_traj.joint_trajectory.points[i].time_from_start = traj.joint_trajectory.points[i].time_from_start / spd
+                    if len(traj.joint_trajectory.points[i].velocities) != n_joints:
+                        print(traj.joint_trajectory.points[i].velocities)
+                    for j in range(len(traj.joint_trajectory.points[i].velocities)):
+                        new_traj.joint_trajectory.points[i].velocities.append(traj.joint_trajectory.points[i].velocities[j] * spd)
+                        new_traj.joint_trajectory.points[i].accelerations.append(traj.joint_trajectory.points[i].accelerations[j] * spd)
+                        new_traj.joint_trajectory.points[i].positions.append(traj.joint_trajectory.points[i].positions[j])
 
                 raw_input("Press <Enter> to move the right arm to goal pose: ")
 
                 # Might have to edit this for part 5
-                if not group.execute(plan, True):
+                if not group.execute(new_traj, True):
                     print("Execution failed")
 
             except Exception as e:
-                print e
                 traceback.print_exc()
+                print(traj.joint_trajectory.points[i].velocities)
             else:
                 break
 
