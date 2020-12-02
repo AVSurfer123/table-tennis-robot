@@ -26,7 +26,7 @@
 	<surface>
 	  <bounce>
 	    <restitution_coefficient>100.0 </restitution_coefficient>
-	    <threshold>0.01</threshold>
+	    <threshold>0</threshold>
 	  </bounce>
     <contact>
       <ode>
@@ -50,14 +50,10 @@
       </visual>
     </link>
 
-    <plugin name="random" filename="libRandomVelocityPlugin.so">
-
-        <!-- Name of the link in this model that receives the velocity -->
-        <link>ball</link>
-
-        <!-- Initial velocity that is applied to the link -->
-        <initial_velocity>0 0.5 0</initial_velocity>
-      </plugin>
+    <plugin name="initial_velocity" filename="libInitialVelocityPlugin.so">
+        <linear>0 1 0</linear>
+        <angular>0 0 0</angular>
+    </plugin>
 
   </model>
 </sdf>
