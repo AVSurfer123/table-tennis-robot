@@ -8,7 +8,7 @@ arm_controller:
      - joint_a5
      - joint_a6
   constraints:
-      goal_time: 0.6
+      goal_time: 0.05
       stopped_velocity_tolerance: 0.05
       joint_a1: {trajectory: 0.1, goal: 0.1}
       joint_a2: {trajectory: 0.1, goal: 0.1}

@@ -24,5 +24,10 @@
       <name>ping_pong_table_part2</name>
       <pose>0.677840 -0.207846 0.0 0 0 3.141592654</pose>
     </include>
+
+    <physics>
+      <!-- Hack to make robot faster by running simulator at 5 times real world speed -->
+      <real_time_update_rate>5000</real_time_update_rate> 
+    </physics>
   </world>
 </sdf>

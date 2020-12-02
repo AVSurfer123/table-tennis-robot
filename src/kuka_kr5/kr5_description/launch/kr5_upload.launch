@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
 
-<arg name="robot_name" default="kr5" />
+<arg name="robot_name" default="kuka" />
 <arg name="use_ros_control" default="True" />
 <arg name="motors_controller_type" default="EffortJointInterface" />
 

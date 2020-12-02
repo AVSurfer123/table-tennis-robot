@@ -196,7 +196,7 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-      Name: kr5
+      Name: kuka
       Robot Description: robot_description
       TF Prefix: ""
       Update Interval: 0
