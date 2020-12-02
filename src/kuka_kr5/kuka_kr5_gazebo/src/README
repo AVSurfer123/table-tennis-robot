@@ -11,7 +11,7 @@ $ export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:<pkg path>/models
 
 1-2 can be done by appending to the end of ~/.bashrc
 
-3.change the directory in self.userinput in "spawn"  
+
 
 4.can change gravity to slow down vertial velocity
 
