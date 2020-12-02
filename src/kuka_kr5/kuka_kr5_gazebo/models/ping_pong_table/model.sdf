@@ -1,0 +1,36 @@
+<?xml version="1.0" ?>
+<sdf version="1.5">
+  <model name="Ping Pong Table">
+    <static>True</static>
+
+    <link name="table">
+      <gravity>false</gravity>
+       <visual name="visual1">
+          <geometry>
+            <mesh>
+              <uri>file:///home/imasmm/.gazebo/models/table2/table.stl</uri>
+              <scale>0.001 0.001 0.001</scale>
+            </mesh>
+            <!-->Model taken from https://3dwarehouse.sketchup.com/model.html?id=b34982af1d6e18736b4393ff6e4e0f88 <\!-->
+          </geometry>
+        </visual>
+        <collision name="collision1">
+          <geometry>
+            <mesh><uri>file:///home/imasmm/.gazebo/models/table2/table.stl</uri></mesh>
+          </geometry>
+          <surface>
+            <bounce>
+              <restitution_coefficient>0.5</restitution_coefficient>
+              <threshold>0</threshold>
+            </bounce>
+            <contact>
+              <ode>
+                <max_vel>10</max_vel>
+              </ode>
+            </contact>
+          </surface>
+        </collision>
+    </link>
+
+  </model>
+</sdf>
