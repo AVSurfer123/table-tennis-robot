@@ -193,6 +193,17 @@
            <geometry>
               <mesh filename="package://kr5_description/meshes/tools/paddle.stl" scale="0.001 0.001 0.001" /> <!-- plate is 20x20x1 m -->
            </geometry>
+           <surface>
+            <bounce>
+              <restitution_coefficient>0.877</restitution_coefficient>
+              <threshold>0</threshold>
+            </bounce>
+            <contact>
+              <ode>
+                <max_vel>10</max_vel>
+              </ode>
+            </contact>
+          </surface>
         </collision>
      </link>
   
