@@ -18,6 +18,7 @@ $ export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:<pkg path>/models
 5.can change number of balls to shoot by changing the for loop range
 
 6.usage
-rosrun auto_ball spawn
+
+    rosrun kuka_kr5_gazebo spawn_ball
 
 
