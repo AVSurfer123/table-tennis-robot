@@ -8,7 +8,7 @@
        <visual name="visual1">
           <geometry>
             <mesh>
-              <uri>file:///home/imasmm/.gazebo/models/table2/table.stl</uri>
+              <uri>model://ping_pong_table/table.stl</uri>
               <scale>0.001 0.001 0.001</scale>
             </mesh>
             <!-->Model taken from https://3dwarehouse.sketchup.com/model.html?id=b34982af1d6e18736b4393ff6e4e0f88 <\!-->
@@ -16,7 +16,10 @@
         </visual>
         <collision name="collision1">
           <geometry>
-            <mesh><uri>file:///home/imasmm/.gazebo/models/table2/table.stl</uri></mesh>
+            <mesh>
+              <uri>model://ping_pong_table/table.stl</uri>
+              <scale>0.001 0.001 0.001</scale>
+            </mesh>
           </geometry>
           <surface>
             <bounce>
