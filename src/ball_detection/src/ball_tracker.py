@@ -20,7 +20,19 @@ def image_callback(rgb_msg):
    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
    mask = cv2.inRange(hsv,lower_orange,upper_orange)
    res = cv2.bitwise_and(frame,frame,mask=mask)
-   
+
+   interest_pixels=cv2.findNonZero(mask)
+
+   x_max = max(interest_pixels,key= lambda p: p[0][0])[0][0]
+   x_min = min(interest_pixels,key= lambda p: p[0][0])[0][0]
+   y_max = max(interest_pixels,key= lambda p: p[0][1])[0][1]
+   y_min = min(interest_pixels,key= lambda p: p[0][1])[0][1]
+   #print(x_min,x_max,y_min,y_max)
+   c_x = x_min+int((x_max - x_min) / 2)
+   c_y = y_min+int((y_max - y_min) / 2)
+
+   res = cv2.circle(res, (c_x,c_y), 10, (0, 0, 255), 1)
+
    out_image = CvBridge().cv2_to_imgmsg(res,encoding="bgr8")
 
    new_data = True
