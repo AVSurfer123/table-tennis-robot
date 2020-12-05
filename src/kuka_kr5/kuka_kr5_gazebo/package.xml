@@ -55,7 +55,6 @@
   <run_depend>rospy</run_depend>
   <run_depend>std_msgs</run_depend>
 
-  <run_depend>kuka_manipulator_description</run_depend>
   <run_depend>gazebo_ros</run_depend>
   <run_depend>gazebo_ros_control</run_depend>
   <run_depend>joint_state_controller</run_depend>

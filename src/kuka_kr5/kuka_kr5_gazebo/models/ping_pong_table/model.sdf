@@ -13,6 +13,9 @@
             </mesh>
             <!-->Model taken from https://3dwarehouse.sketchup.com/model.html?id=b34982af1d6e18736b4393ff6e4e0f88 <\!-->
           </geometry>
+          <material>
+            <diffuse>0 1 0 1 </diffuse>
+          </material>
         </visual>
         <collision name="collision1">
           <geometry>

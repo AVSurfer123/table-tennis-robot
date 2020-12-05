@@ -14,7 +14,7 @@ from moveit_msgs.msg import OrientationConstraint, Constraints, CollisionObject,
 from trajectory_msgs.msg import JointTrajectoryPoint
 from geometry_msgs.msg import PoseStamped
 
-group_name = "kr5_planning_group"
+group_name = "paddle"
 
 def main():
     """
@@ -30,9 +30,6 @@ def main():
     # Initialize the planning scene
     scene = moveit_commander.PlanningSceneInterface()
 
-    # This publishes updates to the planning scene
-    planning_scene_publisher = rospy.Publisher('/collision_object', CollisionObject, queue_size=10)
-
     # Instantiate a move group
     group = moveit_commander.MoveGroupCommander(group_name)
 
@@ -42,16 +39,11 @@ def main():
     # Set maximum velocity scaling
     group.set_max_velocity_scaling_factor(1.0)
     group.set_max_acceleration_scaling_factor(1.0)
-    
 
-	# K values for Part 5
-    Kp = 0.1 * np.array([0.3, 2, 1, 1.5, 2, 2, 3]) # Borrowed from 106B Students
-    Kd = 0.01 * np.array([2, 1, 2, 0.5, 0.5, 0.5, 0.5]) # Borrowed from 106B Students
-    Ki = 0.01 * np.array([1, 1, 1, 1, 1, 1, 1]) # Untuned
-    Kw = np.array([0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9]) # Untuned
+    print(group.get_end_effector_link())
+    print(group.get_pose_reference_frame())
 
-	# Initialize the controller for Part 5
-	# controller = Controller( . . . )
+    # group.set_end_effector_link('ee_link')
 
     #-----------------------------------------------------#
     ## Add any obstacles to the planning scene here
@@ -101,7 +93,7 @@ def main():
                 new_traj.joint_trajectory.joint_names = traj.joint_trajectory.joint_names
                 n_joints = len(traj.joint_trajectory.joint_names)
                 n_points = len(traj.joint_trajectory.points)
-                spd = 5.0
+                spd = 4.0
                 print(traj.joint_trajectory.points)
 
                 for i in range(n_points):
@@ -111,10 +103,10 @@ def main():
                         print(traj.joint_trajectory.points[i].velocities)
                     for j in range(len(traj.joint_trajectory.points[i].velocities)):
                         new_traj.joint_trajectory.points[i].velocities.append(traj.joint_trajectory.points[i].velocities[j] * spd)
-                        new_traj.joint_trajectory.points[i].accelerations.append(traj.joint_trajectory.points[i].accelerations[j] * spd)
+                        new_traj.joint_trajectory.points[i].accelerations.append(traj.joint_trajectory.points[i].accelerations[j] * spd * spd)
                         new_traj.joint_trajectory.points[i].positions.append(traj.joint_trajectory.points[i].positions[j])
 
-                raw_input("Press <Enter> to move the right arm to goal pose: ")
+                _ = raw_input("Press <Enter> to move the right arm to goal pose: ")
 
                 # Might have to edit this for part 5
                 if not group.execute(new_traj, True):
@@ -122,12 +114,13 @@ def main():
 
             except Exception as e:
                 traceback.print_exc()
-                print(traj.joint_trajectory.points[i].velocities)
             else:
                 break
 
     # Set your goal positions here
-    move_to_goal(0.47, 0.5, 0.5)
+    move_to_goal(0.5, 0.5, 0.5)
+    # rospy.sleep(1)
+    # move_to_goal(.6, 1, 1)
 
         
 
