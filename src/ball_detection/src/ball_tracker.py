@@ -31,7 +31,8 @@ def image_callback(rgb_msg):
    c_x = x_min+int((x_max - x_min) / 2)
    c_y = y_min+int((y_max - y_min) / 2)
 
-   res = cv2.circle(res, (c_x,c_y), 10, (0, 0, 255), 1)
+   display_radius = int(x_max-x_min)
+   res = cv2.circle(frame, (c_x,c_y), radius=display_radius*1.5, color=(0, 0, 255), thickness=int(display_radius/3))
 
    out_image = CvBridge().cv2_to_imgmsg(res,encoding="bgr8")
 
