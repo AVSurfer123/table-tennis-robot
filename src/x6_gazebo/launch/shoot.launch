@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+    <include file="$(find x6_gazebo)/launch/spawn_sdf.launch">
+        <arg name="robot_name" value="ball4" />
+        <arg name="x" value="0.0" />
+        <arg name="y" value="-2.5" />
+        <arg name="z" value="1.0" />
+        <arg name="roll" value="0"/>
+        <arg name="pitch" value="0"/>
+        <arg name="yaw" value="0.0" />
+        <arg name="sdf_robot_file" value="$(find x6_gazebo)/models/ping_pong_ball/model.sdf" />
+    </include>
+</launch>

@@ -27,7 +27,7 @@
 
   <!-- We resume the logic in empty_world.launch -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="world_name" value="$(find x6_gazebo)/worlds/gz5_arm.world"/>
+    <arg name="world_name" value="$(find kuka_kr5_gazebo)/worlds/kuka.world"/>
     <!-- more default parameters can be changed here -->
     <arg name="debug" value="$(arg debug)" />
     <arg name="gui" value="$(arg gui)" />
@@ -73,5 +73,6 @@
 <group if="$(arg start_rviz)">
    <node pkg="rviz" type="rviz" name="rviz" args="-d $(find kuka_kr5_gazebo)/config/rviz_gz.rviz" />
 </group>
+
 
 </launch>
