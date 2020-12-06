@@ -75,7 +75,7 @@ class SpawnModel():
         self.initial_xyz             = [0,0,0]
         self.initial_rpy             = [0,0,0]
         self.initial_q               = [0,0,0,1]
-        self.file_name               = "/home/imasmm/table-tennis-robot/src/kuka_kr5/kuka_kr5_gazebo/models/ping_pong_ball/model.sdf"
+        self.file_name               = os.path.expanduser("~/table-tennis-robot/src/kuka_kr5/kuka_kr5_gazebo/models/ping_pong_ball/model.sdf")
         self.param_name              = ""
         self.database_name           = ""
         self.model_name              = ""
@@ -202,7 +202,7 @@ class SpawnModel():
     def createDatabaseCode(self, database_name):
         return model_database_template.replace("MODEL_NAME", database_name);
 
-    def callSpawnService(self):
+    def callSpawnService(self, vel):
 
         # wait for model to exist
         rospy.init_node('spawn_model')
@@ -235,7 +235,7 @@ class SpawnModel():
             rospy.logerr("Error: file is empty %s", self.file_name)
             sys.exit(0)
 
-          model_xml = self.setVelocity(model_xml)
+          model_xml = self.setVelocity(model_xml, vel)
           rospy.sleep(1)
 
         # ROS Parameter
@@ -315,26 +315,7 @@ class SpawnModel():
     def setPose(self, pose):
         self.initial_xyz = pose
 
-    def setVelocity(self, model_xml):
-        vel_valid = False
-        vel = [0, 0, 0, 0, 0, 0]
-        while not vel_valid:
-            vel_input = input("Enter xyz velocities or 'r' for random or 'd' for [0, 2.5, 1.5, 0, 0, 0]: ")
-            if vel_input == 'd':
-                vel_valid = True
-                vel = [0, 2.5, 1.5, 0, 0, 0]
-            elif vel_input == 'r':
-                vel_valid = True
-                x = round(random.uniform(-0.5, 0.5), 1)
-                y = round(random.uniform(2.0, 3.0), 1)
-                z = round(random.uniform(1.5, 2.5), 1)
-                vel = [x, y, z, 0, 0, 0]
-            elif len(vel_input) == 3:
-                vel_valid = True
-                vel = [round(float(vel_input[0]),1), round(float(vel_input[1]),1), round(float(vel_input[2]),1), 0, 0, 0]
-            else:
-                print("Invalid input.")
-
+    def setVelocity(self, model_xml, vel):
         print('vel: ', vel)
 
         lin_x = str(vel[0])
@@ -345,42 +326,58 @@ class SpawnModel():
         ang_z = str(vel[5])
         model_xml = re.sub("<linear>.*<\/linear>", "<linear>{0} {1} {2}</linear>".format(lin_x, lin_y, lin_z), model_xml)
         model_xml = re.sub("<angular>.*<\/angular>", "<angular>{0} {1} {2}</angular>".format(ang_x, ang_y, ang_z), model_xml)
-        print(model_xml)
         return model_xml
 
 
 
 if __name__ == "__main__":
 
-    num_ball = int(input("Enter number of balls to shoot: "))
+    num_balls = 1
 
-    pose_valid = False
     pose = [0, 0, 0]
-    while not pose_valid:
-        pose_input = input("Enter position or 'd' for [0, -2.5, 1.5]: ")
-        if pose_input == 'd':
-            pose_valid = True
-            pose = [0, -2.5, 1.5]
-        elif len(pose_input) == 3:
-            pose_valid = True
-            pose = [float(pose_input[0]), float(pose_input[1]), float(pose_input[2])]
+    while True:
+        pose_input = raw_input("Enter position or enter for [0, -3.5, 1.5]: ")
+        if len(pose_input) == 0:
+            pose = [0, -3.5, 1.5]
         else:
-            print("Invalid input.")
+          try:
+              pose_input = pose_input.split(' ')
+              pose = [float(pose_input[0]), float(pose_input[1]), float(pose_input[2])]
+          except Exception as e:
+              print(e)
+              continue
+        break
+    
+    vel = [0, 0, 0, 0, 0, 0]
+    while True:
+        vel_input = raw_input("Enter xyz velocities or 'r' for random or enter for [0, 2.5, 1.5]: ")
+        if len(vel_input) == 0:
+            vel = [0, 2.5, 1.5, 0, 0, 0]
+        elif vel_input == 'r':
+            x = round(random.uniform(-0.5, 0.5), 2)
+            y = round(random.uniform(2.0, 3.0), 2)
+            z = round(random.uniform(1.5, 2.5), )
+            vel = [x, y, z, 0, 0, 0]
+        else:
+            try:
+                vel_input = vel_input.split(' ')
+                vel = [float(vel_input[0]), float(vel_input[1]), float(vel_input[2]), 0, 0, 0]
+            except Exception as e:
+                print(e)
+                continue
+        break
 
     print("SpawnModel script started") # make this a print incase roscore has not been started
     sm = SpawnModel()
     # sm.parseUserInputs()
 
-    print(pose)
-
-
-    for i in range(0,num_ball):
+    for i in range(num_balls):
         print(" ")
         print("setting ping_pong_ball_" + str(i))
         sm.setModelName("ping_pong_ball_" + str(i))
         sm.setPose(pose)
         sm.callDeleteService()
-        sm.callSpawnService()
+        sm.callSpawnService(vel)
         print("spawning " + sm.model_name)
         rospy.sleep(3)
 

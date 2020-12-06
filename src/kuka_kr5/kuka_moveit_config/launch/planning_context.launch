@@ -1,5 +1,5 @@
 <launch>
-<arg name="robot_name" default="kr5" />
+<arg name="robot_name" default="kuka" />
 
 
   <!-- By default we do not overwrite the URDF. Change the following to true to change the default behavior -->

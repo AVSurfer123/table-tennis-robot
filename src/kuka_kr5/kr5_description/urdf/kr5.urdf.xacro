@@ -176,36 +176,36 @@
   <!-- tool link -->
   <!-- This frame corresponds to the $FLANGE coordinate system in KUKA KRC controllers. -->
   
-     <link name="${prefix}ee_link">
-        <inertial>
-           <origin xyz="0.00983949894991115 -2.78372724487979E-05 0.17275327" rpy="0 0 0" />
-           <mass value="0.085" />
-           <inertia ixx="0.002858" ixy="0" ixz="0" iyy="0.002987" iyz="0" izz="0.0001420" /> <!-- ${0.08333333333*plate_mass*plate_width}-->
-        </inertial>
-        <visual>
-           <origin xyz="0.075 -0.012 0.253" rpy="0 3.1415 0" />
-           <geometry>
-              <mesh filename="package://kr5_description/meshes/tools/paddle.stl" scale="0.001 0.001 0.001" /> <!-- plate is 20x20x1cm if scale is 0.01 -->
-           </geometry>
-        </visual>
-        <collision>
-           <origin xyz="0.075 -0.012 0.253" rpy="0 3.1415 0" />
-           <geometry>
-              <mesh filename="package://kr5_description/meshes/tools/paddle.stl" scale="0.001 0.001 0.001" /> <!-- plate is 20x20x1 m -->
-           </geometry>
-        </collision>
-     </link>
+    <link name="${prefix}ee_link">
+      <inertial>
+          <origin xyz="0.00983949894991115 -2.78372724487979E-05 0.17275327" rpy="0 0 0" />
+          <mass value="0.085" />
+          <inertia ixx="0.002858" ixy="0" ixz="0" iyy="0.002987" iyz="0" izz="0.0001420" /> <!-- ${0.08333333333*plate_mass*plate_width}-->
+      </inertial>
+      <visual>
+          <origin xyz="0.075 -0.012 0.253" rpy="0 3.1415 0" />
+          <geometry>
+            <mesh filename="package://kr5_description/meshes/tools/paddle.stl" scale="0.001 0.001 0.001" /> <!-- plate is 20x20x1cm if scale is 0.01 -->
+          </geometry>
+      </visual>
+      <collision>
+          <origin xyz="0.075 -0.012 0.253" rpy="0 3.1415 0" />
+          <geometry>
+            <mesh filename="package://kr5_description/meshes/tools/paddle.stl" scale="0.001 0.001 0.001" /> <!-- plate is 20x20x1 m -->
+          </geometry>
+      </collision>
+    </link>
   
 
-  <!-- joints: -->
-  <joint name="${prefix}joint_a1" type="revolute">
-    <origin xyz="0 0 0.4" rpy="${pi} 0 0" />
-    <parent link="${prefix}base_link" />
-    <child link = "${prefix}link_1" />
-    <axis xyz="0 0 1" />
-    <limit effort="150" lower="${radians(-155)}" upper="${radians(155)}" velocity="${radians(154)}" />
-    <dynamics damping="0.0" friction="0.0"/>
-  </joint>
+    <!-- joints: -->
+    <joint name="${prefix}joint_a1" type="revolute">
+      <origin xyz="0 0 0.4" rpy="${pi} 0 0" />
+      <parent link="${prefix}base_link" />
+      <child link = "${prefix}link_1" />
+      <axis xyz="0 0 1" />
+      <limit effort="150" lower="${radians(-155)}" upper="${radians(155)}" velocity="${radians(15400)}" />
+      <dynamics damping="0.0" friction="0.0"/>
+    </joint>
 
 
     <joint name="${prefix}joint_a2" type="revolute">
@@ -213,7 +213,7 @@
       <parent link="${prefix}link_1" />
       <child link = "${prefix}link_2" />
       <axis xyz="0 0 1" />
-      <limit  lower="${radians(-180)}" upper="${radians(65)}" effort="150.0" velocity="${radians(154)}"/>
+      <limit  lower="${radians(-180)}" upper="${radians(65)}" effort="150.0" velocity="${radians(15400)}"/>
       <dynamics damping="0.0" friction="0.0"/>
     </joint>
 
@@ -222,7 +222,7 @@
     <child link = "${prefix}link_3" />
     <origin xyz="0.6 0 0" rpy="0 0 0" />
       <axis xyz="0 0 1" />
-      <limit lower="${radians(-15)}" upper="${radians(158)}"  effort="150.0" velocity="3.15"/>
+      <limit lower="${radians(-15)}" upper="${radians(158)}"  effort="150.0" velocity="315"/>
       <dynamics damping="0.0" friction="0.0"/>
     </joint>
 
@@ -231,7 +231,7 @@
     <child link = "${prefix}link_4" />
          <origin xyz="0 -0.12 0" rpy="0 ${-pi/2} 0" />
       <axis xyz="0 0 1" />
-      <limit lower="${radians(-350)}" upper="${radians(350)}" effort="60.0" velocity="3.2"/> <!-- max should be 28 -->
+      <limit lower="${radians(-350)}" upper="${radians(350)}" effort="60.0" velocity="320"/> <!-- max should be 28 -->
       <dynamics damping="0.0" friction="0.0"/>
     </joint>
 
@@ -240,7 +240,7 @@
     <child link = "${prefix}link_5" />
          <origin xyz="0 0 -0.62" rpy="0 ${pi/2} 0" />
       <axis xyz="0 0 1" />
-      <limit  lower="${radians(-130)}" upper="${radians(130)}" effort="60.0" velocity="3.2"/> <!-- max should be 28 -->
+      <limit  lower="${radians(-130)}" upper="${radians(130)}" effort="60.0" velocity="320"/> <!-- max should be 28 -->
       <dynamics damping="0.0" friction="0.0"/>
     </joint>
 
@@ -249,7 +249,7 @@
     <child link = "${prefix}link_6" />
          <origin xyz="0 0 0" rpy="0 ${-pi/2} 0" />
       <axis xyz="0 0 1" />
-      <limit lower="${radians(-350)}" upper="${radians(350)}"  effort="28.0" velocity="3.2"/>
+      <limit lower="${radians(-350)}" upper="${radians(350)}"  effort="28.0" velocity="320"/>
       <dynamics damping="0.0" friction="0.0"/>
     </joint>
 
