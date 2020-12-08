@@ -4,7 +4,7 @@
     <static>True</static>
 
     <link name="table">
-      <gravity>false</gravity>
+      <gravity>true</gravity>
        <visual name="visual1">
           <geometry>
             <mesh>
