@@ -19,12 +19,12 @@
     </include>
     <include>
       <uri>model://camera</uri>
-      <name>camera1</name>
+      <name>top_camera</name>
       <pose>0 0.5 1.0 0.09 0 0.03</pose>
     </include>
     <include>
       <uri>model://side_camera</uri>
-      <name>camera2</name>
+      <name>side_camera</name>
       <pose>-3.0 -1.5 1.0 0 0 0</pose>
     </include>
   </world>

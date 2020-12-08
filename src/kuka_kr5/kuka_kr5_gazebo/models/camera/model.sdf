@@ -3,6 +3,7 @@
   <model name="camera">
     <link name="link">
       <gravity>0</gravity>
+      <pose>0.01 -1.6 3.5 1.5 1.65 1.47</pose>
       <inertial>
         <mass>0.1</mass>
         <inertia>
@@ -42,8 +43,8 @@
         <visualize>true</visualize>
         <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
           <alwaysOn>true</alwaysOn>
-          <updateRate>30.0</updateRate>
-          <cameraName>pp/camera1</cameraName>
+          <updateRate>60.0</updateRate>
+          <cameraName>pp/top_camera</cameraName>
           <imageTopicName>image_raw</imageTopicName>
           <cameraInfoTopicName>camera_info</cameraInfoTopicName>
           <frameName>camera_link</frameName>

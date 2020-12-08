@@ -149,7 +149,10 @@ def main():
 
     # Set your goal positions here
     # move_to_goal(0, 0, 1)
-    move_to_goal(0.5, 0.7, 0.76)
+    if len(sys.argv) > 3:
+        move_to_goal(*(float(num) for num in sys.argv[1:4]))
+    else:
+        move_to_goal(0.5, .3, 0.76)
     # rospy.sleep(1)
     # move_to_goal(.6, 1, 1)
 
