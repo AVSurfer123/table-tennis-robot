@@ -14,11 +14,12 @@ top_out_image = Image()
 side_out_image = Image()
 estimated_pose = Pose()
 new_data = False
+count = 0
 
 #CONSTANTS
 TOP_CORNERS = [[1.325,0.554],[1.297,-3.261],[-1.245,0.562],[-1.214,-3.269]] #top left, top right, bottom left, bottom right
-SIDE_BOUNDS = [3.113,0.614] #top and bottom poses
-RESOLUTION = (720,480) #w,h
+SIDE_BOUNDS = [2.150,-0.149] #top and bottom poses
+RESOLUTION = [720.0,480.0] #w,h
 
 def image_callback(top_rgb_image,side_rgb_image):
    global top_out_image, side_out_image, estimated_pose, new_data
@@ -86,7 +87,7 @@ def image_callback(top_rgb_image,side_rgb_image):
       upper_bound = SIDE_BOUNDS[0]
       lower_bound = SIDE_BOUNDS[1]
       estimated_z = float(upper_bound - (c_y / RESOLUTION[1]) * (upper_bound - lower_bound))
-
+   print(estimated_x,estimated_y,estimated_z)
    #publishes only if there is new pose estimated data (image publisher not affected)
    if (estimated_x != None and estimated_y != None) or estimated_z != None:
          estimated_pose.position.x = estimated_x
@@ -98,12 +99,13 @@ def image_callback(top_rgb_image,side_rgb_image):
    side_out_image = CvBridge().cv2_to_imgmsg(side_frame,encoding="bgr8")
 
 def publisher_callback(event):
-   global out_image, new_data
+   global out_image, new_data, count
    img_pub.publish(top_out_image)
    if new_data:
-      print("publish")
+      print("publish frame {}".format(count))
       ball_pose_pub.publish(estimated_pose)
       new_data = False
+      count+=1
 
 if __name__ == '__main__':
    rospy.init_node('ball_tracker_node', anonymous=True)
