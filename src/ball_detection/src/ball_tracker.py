@@ -115,4 +115,5 @@ if __name__ == '__main__':
    ts.registerCallback(image_callback)
    timer = rospy.Timer(rospy.Duration(0.001), publisher_callback) #publishes at ~100fps, but input is 30fps
    rospy.spin()
-   timer.shutdown
+   timer.shutdown()
+   
