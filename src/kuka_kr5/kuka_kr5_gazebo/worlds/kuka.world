@@ -10,7 +10,7 @@
     <include>
       <uri>model://ping_pong_table</uri>
       <name>ping_pong_table</name>
-      <pose>-0.915 0 0 0 0 -1.570796</pose>
+      <pose>-0.915 0 -.062 0 0 -1.570796</pose>
     </include>
     <include>
       <uri>model://ping_pong_ball</uri>

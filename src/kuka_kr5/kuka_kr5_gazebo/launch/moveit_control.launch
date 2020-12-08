@@ -24,25 +24,49 @@
   </include>
 
 
-<!-- Load robot description to parameter server -->
-<include file="$(find kr5_description)/launch/kr5_upload.launch">
+  <!-- Load robot description to parameter server -->
+  <include file="$(find kr5_description)/launch/kr5_upload.launch">
      <arg name="robot_name" value="$(arg robot_name)" />
      <arg name="use_ros_control" value="$(arg use_ros_control)" />
      <arg name="motors_controller_type" value="$(arg motors_controller_type)" />
- </include>
+  </include>
 
-<!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
+  <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
         args="-urdf -model $(arg robot_name) -param robot_description"/>
 
-  <include file="$(find kuka_kr5_gazebo)/launch/controller_utils.launch"/>
+  <!-- Robot state publisher, publishes tf transforms -->
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+    <param name="publish_frequency" type="double" value="50.0" />
+    <param name="tf_prefix" type="string" value="" />
+  </node>
 
+  <!-- Publish to joint_states -->
+  <rosparam file="$(find kuka_kr5_control)/config/joint_state_controller_moveit.yaml" command="load"/>
+  <node name="joint_state_controller_spawner" pkg="controller_manager" type="controller_manager" args="spawn joint_state_controller" respawn="false" output="screen"/>
+  
+  <!-- <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+      <param name="/use_gui" value="false" />
+      <rosparam param="/source_list">[/joint_states]</rosparam>
+  </node> -->
+
+  <!-- Controller for MoveIt -->
   <rosparam file="$(find kuka_kr5_control)/config/arm_controller_kr5.yaml" command="load"/>
   <node name="arm_controller_spawner" pkg="controller_manager" type="controller_manager" args="spawn arm_controller" respawn="false" output="screen"/>
+<!-- <include file="$(find kuka_moveit_config)/launch/ros_controllers.launch"/> -->
 
-  <!-- start moveit: -->
-  <include file="$(find kuka_moveit_config)/launch/start_moveit_connected_with_gz.launch" />
+  <!-- start MoveIt nodes: -->
+  <rosparam command="load" file="$(find kuka_moveit_config)/config/joint_names.yaml" />
+  <include file="$(find kuka_moveit_config)/launch/planning_context.launch">
+          <arg name="load_robot_description" value="true" />
+  </include>
 
+  <include file="$(find kuka_moveit_config)/launch/move_group.launch">
+          <arg name="publish_monitored_planning_scene" value="true" />
+  </include>
 
+  <include file="$(find kuka_moveit_config)/launch/moveit_rviz.launch">
+          <arg name="config" value="true" />
+  </include>
 
 </launch>

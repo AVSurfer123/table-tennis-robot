@@ -12,9 +12,17 @@ import moveit_commander
 
 from moveit_msgs.msg import OrientationConstraint, Constraints, CollisionObject, RobotTrajectory
 from trajectory_msgs.msg import JointTrajectoryPoint
-from geometry_msgs.msg import PoseStamped
+from geometry_msgs.msg import PoseStamped, Pose, Point
+from shape_msgs.msg import SolidPrimitive
 
-group_name = "paddle"
+group_name = "kr5_planning_group"
+
+TABLE_CENTER = PoseStamped()
+TABLE_CENTER.header.frame_id = 'world'
+TABLE_CENTER.pose = Pose(position=Point(0, -1.37, .76))
+TABLE_CENTER.pose.orientation.w = 1
+
+TABLE_SIZE = [1.525, 2.74, 0.0201]
 
 def main():
     """
@@ -29,6 +37,7 @@ def main():
 
     # Initialize the planning scene
     scene = moveit_commander.PlanningSceneInterface()
+    scene_publisher = rospy.Publisher('/collision_object', CollisionObject, queue_size=10)
 
     # Instantiate a move group
     group = moveit_commander.MoveGroupCommander(group_name)
@@ -40,10 +49,32 @@ def main():
     group.set_max_velocity_scaling_factor(1.0)
     group.set_max_acceleration_scaling_factor(1.0)
 
+    print(group.get_current_pose())
     print(group.get_end_effector_link())
     print(group.get_pose_reference_frame())
+    print(group.get_goal_tolerance())
 
-    # group.set_end_effector_link('ee_link')
+    # Create a CollisionObject, which will be added to the planning scene
+    co = CollisionObject()
+    co.operation = CollisionObject.ADD
+    co.id = 'table'
+    co.header = TABLE_CENTER.header
+
+    # Create a box primitive, which will be inside the CollisionObject
+    box = SolidPrimitive()
+    box.type = SolidPrimitive.BOX
+    box.dimensions = TABLE_SIZE
+
+    # Fill the collision object with primitive(s)
+    co.primitives = [box]
+    co.primitive_poses = [TABLE_CENTER.pose]
+
+    # Publish the object
+    scene_publisher.publish(co)
+
+    # group.set_goal_joint_tolerance(.01)
+    # group.set_goal_position_tolerance(.01)
+    # group.set_goal_orientation_tolerance(.001)
 
     #-----------------------------------------------------#
     ## Add any obstacles to the planning scene here
@@ -87,13 +118,12 @@ def main():
 
                 traj = group.plan()
 
-
                 new_traj = RobotTrajectory()
                 new_traj.joint_trajectory.header = traj.joint_trajectory.header
                 new_traj.joint_trajectory.joint_names = traj.joint_trajectory.joint_names
                 n_joints = len(traj.joint_trajectory.joint_names)
                 n_points = len(traj.joint_trajectory.points)
-                spd = 4.0
+                spd = 5.0
                 print(traj.joint_trajectory.points)
 
                 for i in range(n_points):
@@ -118,7 +148,8 @@ def main():
                 break
 
     # Set your goal positions here
-    move_to_goal(0.5, 0.5, 0.5)
+    # move_to_goal(0, 0, 1)
+    move_to_goal(0.5, 0.7, 0.76)
     # rospy.sleep(1)
     # move_to_goal(.6, 1, 1)
 
