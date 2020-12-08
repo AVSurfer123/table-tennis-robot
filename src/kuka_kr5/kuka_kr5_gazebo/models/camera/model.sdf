@@ -3,7 +3,6 @@
   <model name="camera">
     <link name="link">
       <gravity>0</gravity>
-      <pose>0.01 -1.6 3.5 1.5 1.65 1.47</pose>
       <inertial>
         <mass>0.1</mass>
         <inertia>
