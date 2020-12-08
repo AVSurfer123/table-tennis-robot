@@ -12,5 +12,20 @@
       <name>ping_pong_table</name>
       <pose>-0.915 0 -.062 0 0 -1.570796</pose>
     </include>
+    <include>
+      <uri>model://ping_pong_ball</uri>
+      <name>ping_pong_ball</name>
+      <pose>0 -2.0 0.9 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://camera</uri>
+      <name>camera1</name>
+      <pose>0 0.5 1.0 0.09 0 0.03</pose>
+    </include>
+    <include>
+      <uri>model://side_camera</uri>
+      <name>camera2</name>
+      <pose>-3.0 -1.5 1.0 0 0 0</pose>
+    </include>
   </world>
 </sdf>
