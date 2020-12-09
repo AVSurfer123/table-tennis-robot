@@ -42,11 +42,11 @@
         <visualize>true</visualize>
         <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
           <alwaysOn>true</alwaysOn>
-          <updateRate>30.0</updateRate>
+          <updateRate>60.0</updateRate>
           <cameraName>pp/side_camera</cameraName>
           <imageTopicName>image_raw</imageTopicName>
           <cameraInfoTopicName>camera_info</cameraInfoTopicName>
-          <frameName>camera_link</frameName>
+          <frameName>side_camera_link</frameName>
           <hackBaseline>0.07</hackBaseline>
           <distortionK1>0.0</distortionK1>
           <distortionK2>0.0</distortionK2>
