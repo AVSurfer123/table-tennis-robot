@@ -371,15 +371,12 @@ if __name__ == "__main__":
     sm = SpawnModel()
     # sm.parseUserInputs()
 
-    for i in range(num_balls):
-        print(" ")
-        print("setting ping_pong_ball_" + str(i))
-        sm.callDeleteService()
-        sm.setModelName("ping_pong_ball_" + str(i))
-        sm.setPose(pose)
-        sm.callSpawnService(vel)
-        print("spawning " + sm.model_name)
-        rospy.sleep(1)
+    sm.setModelName("ping_pong_ball")
+    sm.callDeleteService()
+    sm.setPose(pose)
+    sm.callSpawnService(vel)
+    print("spawning " + sm.model_name)
+    rospy.sleep(1)
 
     if sm.bond:
         rospy.on_shutdown(sm.callDeleteService)
