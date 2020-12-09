@@ -3,13 +3,13 @@ import cv2
 import message_filters
 import rospy
 from sensor_msgs.msg import Image
-from geometry_msgs.msg import Pose
+from geometry_msgs.msg import PoseStamped
 from cv_bridge import CvBridge
 import numpy as np
 
 top_img_pub = rospy.Publisher('/ball_detection/top_camera/filtered_image', Image, queue_size=10)
 side_img_pub = rospy.Publisher('/ball_detection/side_camera/filtered_image', Image, queue_size=10)
-ball_pose_pub = rospy.Publisher('/ball_detection/ball_pose', Pose, queue_size=10)
+ball_pose_pub = rospy.Publisher('/ball_detection/ball_pose', PoseStamped, queue_size=10)
 top_ball_mask_pub = rospy.Publisher('/ball_detection/top_camera/ball_mask', Image, queue_size=10)
 side_ball_mask_pub = rospy.Publisher('/ball_detection/side_camera/ball_mask', Image, queue_size=10)
 
@@ -22,7 +22,7 @@ count = 0
 
 def image_callback(top_rgb_image,side_rgb_image):
    global count
-   estimated_pose = Pose()
+   estimated_pose = PoseStamped()
    new_data = False
    
    estimated_x = None
@@ -88,12 +88,14 @@ def image_callback(top_rgb_image,side_rgb_image):
       upper_bound = SIDE_BOUNDS[0]
       lower_bound = SIDE_BOUNDS[1]
       estimated_z = float(upper_bound - (c_y / RESOLUTION[1]) * (upper_bound - lower_bound))
-   print(estimated_x,estimated_y,estimated_z)
    #publishes only if there is new pose estimated data (image publisher not affected)
    if estimated_x != None and estimated_y != None and estimated_z != None:
-         estimated_pose.position.x = estimated_x
-         estimated_pose.position.y = estimated_y
-         estimated_pose.position.z = estimated_z
+         estimated_pose.pose.position.x = estimated_x
+         estimated_pose.pose.position.y = estimated_y
+         estimated_pose.pose.position.z = estimated_z
+         curTime = rospy.Time.now()
+         estimated_pose.header.stamp = curTime
+         print(estimated_x,estimated_y,estimated_z,curTime.secs+curTime.nsecs/1e9)
          new_data = True
 
    top_out_image = CvBridge().cv2_to_imgmsg(top_frame, encoding="bgr8")
@@ -107,7 +109,7 @@ def image_callback(top_rgb_image,side_rgb_image):
    side_ball_mask_pub.publish(side_masked_image)
 
    if new_data:
-      print("publish frame {}".format(count))
+      # print("publish frame {}".format(count))
       ball_pose_pub.publish(estimated_pose)
       new_data = False
       count+=1

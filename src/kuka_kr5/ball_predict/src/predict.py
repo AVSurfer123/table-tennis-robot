@@ -46,8 +46,6 @@ class EndPosVelPrediction:
 		vx = data.vel.x
 		vy = data.vel.y
 		vz = data.vel.z
-		print('received data: ')
-		print(data)
 
 		pred_state = PosVelTimed()
 		pred_state.pos.y = self.y_end
@@ -85,6 +83,8 @@ class EndPosVelPrediction:
 			pred_state.vel.z = vz + self.g*t
 			self.pub.publish(pred_state)
 			print("ball will not rebound but hittable\n")
+			print("sent data: ")
+			print(pred_state, "\n")
 			return
 
 		else:
@@ -98,7 +98,7 @@ class EndPosVelPrediction:
 			vz_out = -self.e * vz_in
 
 			# time for second rebound
-			t_rb2 = 2 * vz_out / self.g
+			t_rb2 = 2 * vz_out / -self.g
 			# time remains from the first rebound
 			t_rem = t - t_rb1
 			if t_rb2 < t_rem:
@@ -108,10 +108,12 @@ class EndPosVelPrediction:
 				print('rebound more than once\n')
 				return
 			else:
-				pred_state.pos.z = vz_out*t_rem + 0.5*self.g*t_rem**2
+				pred_state.pos.z = z+vz_out*t_rem + 0.5*self.g*t_rem**2
 				pred_state.vel.z = vz_out + self.g*t_rem
 				self.pub.publish(pred_state)
 				print("ball rebounds once and hittable\n")
+				print("sent data: ")
+				print(pred_state, "\n")
 				return
 
 

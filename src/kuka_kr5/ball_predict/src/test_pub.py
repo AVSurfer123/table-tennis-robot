@@ -11,11 +11,11 @@ def talker():
 		pub_data = PosVelTimed()
 		pub_data.stamp = rospy.Time.now()
 		pub_data.pos.x = 0.0
-		pub_data.pos.y = -2.5
+		pub_data.pos.y = -2.70
 		pub_data.pos.z = 1.5
 		pub_data.vel.x = 0.0
-		pub_data.vel.y = 6.0
-		pub_data.vel.z = 1.0
+		pub_data.vel.y = 5.0
+		pub_data.vel.z = 1.5
 		pub.publish(pub_data)
 		print("data sent: ")
 		print(pub_data)

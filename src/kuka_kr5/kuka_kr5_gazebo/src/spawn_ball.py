@@ -236,6 +236,7 @@ class SpawnModel():
             sys.exit(0)
 
           model_xml = self.setVelocity(model_xml, vel)
+          print(model_xml)
           rospy.sleep(1)
 
         # ROS Parameter
@@ -336,9 +337,9 @@ if __name__ == "__main__":
 
     pose = [0, 0, 0]
     while True:
-        pose_input = raw_input("Enter position or enter for [0, -3.5, 1.5]: ")
+        pose_input = raw_input("Enter position or enter for [0.2, -2.5, 1.5]: ")
         if len(pose_input) == 0:
-            pose = [0, -3.5, 1.5]
+            pose = [0.2, -3.5, 1.5]
         else:
           try:
               pose_input = pose_input.split(' ')
@@ -350,9 +351,9 @@ if __name__ == "__main__":
     
     vel = [0, 0, 0, 0, 0, 0]
     while True:
-        vel_input = raw_input("Enter xyz velocities or 'r' for random or enter for [0, 2.5, 1.5]: ")
+        vel_input = raw_input("Enter xyz velocities or 'r' for random or enter for [0, 4.0, 1.5]: ")
         if len(vel_input) == 0:
-            vel = [0, 2.5, 1.5, 0, 0, 0]
+            vel = [0, 4.5, 1.5, 0, 0, 0]
         elif vel_input == 'r':
             x = round(random.uniform(-0.5, 0.5), 2)
             y = round(random.uniform(2.0, 3.0), 2)
@@ -374,8 +375,8 @@ if __name__ == "__main__":
     for i in range(num_balls):
         print(" ")
         print("setting ping_pong_ball_" + str(i))
-        sm.callDeleteService()
         sm.setModelName("ping_pong_ball_" + str(i))
+        sm.callDeleteService()
         sm.setPose(pose)
         sm.callSpawnService(vel)
         print("spawning " + sm.model_name)
