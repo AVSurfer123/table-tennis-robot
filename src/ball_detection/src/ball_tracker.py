@@ -7,9 +7,11 @@ from geometry_msgs.msg import Pose
 from cv_bridge import CvBridge
 import numpy as np
 
-img_pub = rospy.Publisher('/ball_detection/camera/image_filtered', Image, queue_size=10)
+top_img_pub = rospy.Publisher('/ball_detection/top_camera/filtered_image', Image, queue_size=10)
+side_img_pub = rospy.Publisher('/ball_detection/side_camera/filtered_image', Image, queue_size=10)
 ball_pose_pub = rospy.Publisher('/ball_detection/ball_pose', Pose, queue_size=10)
-ball_mask_pub = rospy.Publisher('/ball_detection/ball_mask', Image, queue_size=10)
+top_ball_mask_pub = rospy.Publisher('/ball_detection/top_camera/ball_mask', Image, queue_size=10)
+side_ball_mask_pub = rospy.Publisher('/ball_detection/side_camera/ball_mask', Image, queue_size=10)
 
 #CONSTANTS
 TOP_CORNERS = [[1.325,0.554],[1.297,-3.261],[-1.245,0.562],[-1.214,-3.269]] #top left, top right, bottom left, bottom right
@@ -40,11 +42,10 @@ def image_callback(top_rgb_image,side_rgb_image):
    side_mask = cv2.inRange(side_hsv,lower_orange,upper_orange)
 
    top_masked = np.expand_dims(top_mask, -1) * top_frame
+   side_masked = np.expand_dims(side_mask, -1) * side_frame
    
    top_interest_pixels=cv2.findNonZero(top_mask)
    side_interest_pixels=cv2.findNonZero(side_mask)
-
-   #interest_pixels_filtered = list(filter(lambda p: (p[0][0] > 0), interest_pixels))
 
    #ball perception top image
    if top_interest_pixels != None and len(top_interest_pixels) > 0:
@@ -98,9 +99,13 @@ def image_callback(top_rgb_image,side_rgb_image):
    top_out_image = CvBridge().cv2_to_imgmsg(top_frame, encoding="bgr8")
    side_out_image = CvBridge().cv2_to_imgmsg(side_frame, encoding="bgr8")
    top_masked_image = CvBridge().cv2_to_imgmsg(top_masked, encoding='bgr8')
+   side_masked_image = CvBridge().cv2_to_imgmsg(side_masked, encoding='bgr8')
 
-   img_pub.publish(top_out_image)
-   ball_mask_pub.publish(top_masked_image)
+   top_img_pub.publish(top_out_image)
+   side_img_pub.publish(side_out_image)
+   top_ball_mask_pub.publish(top_masked_image)
+   side_ball_mask_pub.publish(side_masked_image)
+
    if new_data:
       print("publish frame {}".format(count))
       ball_pose_pub.publish(estimated_pose)
