@@ -13,13 +13,16 @@ ball_mask_pub = rospy.Publisher('/ball_detection/ball_mask', Image, queue_size=1
 
 #CONSTANTS
 TOP_CORNERS = [[1.325,0.554],[1.297,-3.261],[-1.245,0.562],[-1.214,-3.269]] #top left, top right, bottom left, bottom right
-SIDE_BOUNDS = [2.150,-0.149] #top and bottom poses
+SIDE_BOUNDS = [1.961,-0.371] #top and bottom poses
 RESOLUTION = [720.0,480.0] #w,h
 
+count = 0
+
 def image_callback(top_rgb_image,side_rgb_image):
+   global count
    estimated_pose = Pose()
    new_data = False
-   count = 0
+   
    estimated_x = None
    estimated_y = None
    estimated_z = None
