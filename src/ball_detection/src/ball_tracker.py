@@ -1,28 +1,35 @@
 #! /usr/bin/python
+
+from __future__ import print_function
+
 import cv2
 import message_filters
 import rospy
 from sensor_msgs.msg import Image
-from geometry_msgs.msg import Pose
+from geometry_msgs.msg import PoseStamped
 from cv_bridge import CvBridge
 import numpy as np
+from ros_numpy import numpify
 
 top_img_pub = rospy.Publisher('/ball_detection/top_camera/filtered_image', Image, queue_size=10)
 side_img_pub = rospy.Publisher('/ball_detection/side_camera/filtered_image', Image, queue_size=10)
-ball_pose_pub = rospy.Publisher('/ball_detection/ball_pose', Pose, queue_size=10)
+ball_pose_pub = rospy.Publisher('/ball_detection/ball_pose', PoseStamped, queue_size=10)
+pose_error_pub = rospy.Publisher('/ball_detection/pose_error', PoseStamped, queue_size=10)
 top_ball_mask_pub = rospy.Publisher('/ball_detection/top_camera/ball_mask', Image, queue_size=10)
 side_ball_mask_pub = rospy.Publisher('/ball_detection/side_camera/ball_mask', Image, queue_size=10)
 
 #CONSTANTS
 TOP_CORNERS = [[1.325,0.554],[1.297,-3.261],[-1.245,0.562],[-1.214,-3.269]] #top left, top right, bottom left, bottom right
-SIDE_BOUNDS = [1.961,-0.371] #top and bottom poses
+SIDE_BOUNDS = [1.959547,-0.3700] #top and bottom poses, # TODO Adjust for new camera position
 RESOLUTION = [720.0,480.0] #w,h
 
 count = 0
 
-def image_callback(top_rgb_image,side_rgb_image):
+def image_callback(top_rgb_image, side_rgb_image, ground_truth_pose):
    global count
-   estimated_pose = Pose()
+   estimated_pose = PoseStamped()
+   estimated_pose.header.frame_id = 'world'
+   estimated_pose.header.stamp = top_rgb_image.header.stamp
    new_data = False
    
    estimated_x = None
@@ -88,12 +95,13 @@ def image_callback(top_rgb_image,side_rgb_image):
       upper_bound = SIDE_BOUNDS[0]
       lower_bound = SIDE_BOUNDS[1]
       estimated_z = float(upper_bound - (c_y / RESOLUTION[1]) * (upper_bound - lower_bound))
-   print(estimated_x,estimated_y,estimated_z)
+   
+   print("Estimated pose:", estimated_x,estimated_y,estimated_z)
    #publishes only if there is new pose estimated data (image publisher not affected)
    if estimated_x != None and estimated_y != None and estimated_z != None:
-         estimated_pose.position.x = estimated_x
-         estimated_pose.position.y = estimated_y
-         estimated_pose.position.z = estimated_z
+         estimated_pose.pose.position.x = estimated_x
+         estimated_pose.pose.position.y = estimated_y
+         estimated_pose.pose.position.z = estimated_z
          new_data = True
 
    top_out_image = CvBridge().cv2_to_imgmsg(top_frame, encoding="bgr8")
@@ -109,6 +117,16 @@ def image_callback(top_rgb_image,side_rgb_image):
    if new_data:
       print("publish frame {}".format(count))
       ball_pose_pub.publish(estimated_pose)
+
+      pose_error = PoseStamped()
+      pose_error.header.frame_id = 'world'
+      pose_error.header.stamp = top_rgb_image.header.stamp
+      pose_error.pose.position.x = ground_truth_pose.pose.position.x - estimated_pose.pose.position.x
+      pose_error.pose.position.y = ground_truth_pose.pose.position.y - estimated_pose.pose.position.y
+      pose_error.pose.position.z = ground_truth_pose.pose.position.z - estimated_pose.pose.position.z
+      pose_error_pub.publish(pose_error)
+      print("pose error:", np.linalg.norm(numpify(pose_error.pose.position)))
+      
       new_data = False
       count+=1
 
@@ -116,7 +134,8 @@ if __name__ == '__main__':
    rospy.init_node('ball_tracker_node', anonymous=True)
    top_camera_sub = message_filters.Subscriber('/pp/top_camera/image_raw',Image)
    side_camera_sub = message_filters.Subscriber('/pp/side_camera/image_raw',Image)
-   ts = message_filters.TimeSynchronizer([top_camera_sub,side_camera_sub], 10)
+   ground_truth_sub = message_filters.Subscriber('/ball_detection/true_pose', PoseStamped)
+   ts = message_filters.ApproximateTimeSynchronizer([top_camera_sub,side_camera_sub, ground_truth_sub], 30, .01)
    ts.registerCallback(image_callback)
    rospy.spin()
    
