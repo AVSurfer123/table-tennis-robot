@@ -2,6 +2,7 @@
 
 from __future__ import print_function
 import sys
+from collections import deque
 
 import numpy as np
 import rospy
@@ -40,7 +41,7 @@ def ema(pos, time, direction, mix_constant):
     return pos_filtered, vel_filtered
 
 last_msg = None
-history = []
+history = deque([], maxlen=15)
 
 def convert_to_numpy(history):
     pos = []

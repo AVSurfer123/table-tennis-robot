@@ -11,4 +11,7 @@
     <!-- Uses prior pose estimates to estimate current pose and velocity -->
     <node name="velocity_filter" pkg="ball_detection" type="velocity_filter.py" respawn="true" output="screen" />
 
+    <!-- Use velocity estimate of ball to determine final position -->
+    <node name="trajectory_prediction" pkg="ball_detection" type="predict.py" respawn="true" output="screen" />
+
 </launch>

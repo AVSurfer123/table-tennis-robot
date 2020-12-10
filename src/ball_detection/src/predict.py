@@ -48,6 +48,7 @@ class EndPosVelPrediction:
 		vy = data.vel.y
 		vz = data.vel.z
 		y_end = self.y_end
+		z_end = self.z_end
 
 		# check if the ball is not on the table initially
 		if (z < self.table_height+self.ball_radius
@@ -100,8 +101,8 @@ class EndPosVelPrediction:
 			# NOTE: this method may fail if z end position is too close to the table, may need an offset (t_rb2 < t_rem - 0.2?)
 			
 			# Quadratic equation z_end = v_z t + .5 a * t^2
-			discrim = np.sqrt(vz_out ** 2 + 2*(-g)*z_end)
-			time1, time2 = (-vz_out + discrim)/(-g), (-vz_out - discrim)/(-g)
+			discrim = np.sqrt(vz_out ** 2 + 2*(-self.g)*z_end)
+			time1, time2 = (-vz_out + discrim)/(-self.g), (-vz_out - discrim)/(-self.g)
 			t_hit = None
 			choose1, choose2 = True, True
 			# time of hit must occur after bounce
@@ -113,6 +114,8 @@ class EndPosVelPrediction:
 				choose2 = False
 			if choose1 == False and choose2 == False:
 				print("quadratic didn't find any valid solutions")
+				self.pubNotHittable()
+				return
 			elif choose1 == True and choose2 == True:
 				print("quadratic has 2 valid solutions. First was chosen")
 				t_hit = time1
@@ -122,7 +125,7 @@ class EndPosVelPrediction:
 				t_hit = time2
 			
 			t_end = t_rb1 + t_hit
-			vz_end = vz_out - g * t_hit
+			vz_end = vz_out - self.g * t_hit
 			x_end = x + vx*t_end
 			y_end = y + vy*t_end		
 		else:
