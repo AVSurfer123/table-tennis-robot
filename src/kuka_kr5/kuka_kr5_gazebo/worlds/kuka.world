@@ -25,7 +25,7 @@
     <include>
       <uri>model://side_camera</uri>
       <name>side_camera</name>
-      <pose>-3.0 -1.5 0.8 0 0 0</pose>
+      <pose>-3.0 -1.4 0.8 0 0 0</pose>
     </include>
   </world>
 </sdf>

@@ -1,6 +1,0 @@
-float64 absolutePosition
-bool absPosIsSet
-bool closeGripper
-float64 noMovementTimeout
-bool openGripper
-bool useCustomNoMovementTimeout
