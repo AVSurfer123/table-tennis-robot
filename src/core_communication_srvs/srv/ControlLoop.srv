@@ -1,7 +1,0 @@
-# request fields
-bool setControlLoop
-core_communication_msgs/ControlLoop newControlLoop 
----
-# response fields
-core_communication_msgs/ControlLoop[] controlLoops
-core_communication_msgs/ControlLoop activeControlLoop

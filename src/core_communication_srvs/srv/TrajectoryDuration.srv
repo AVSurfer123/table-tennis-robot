@@ -1,5 +1,0 @@
-# request fields
-core_communication_msgs/BioRobJointTrajectoryPoint[] points
----
-# response fields
-float64[] duration
