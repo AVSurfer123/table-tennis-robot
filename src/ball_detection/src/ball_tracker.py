@@ -20,7 +20,7 @@ side_ball_mask_pub = rospy.Publisher('/ball_detection/side_camera/ball_mask', Im
 
 #CONSTANTS
 TOP_CORNERS = [[1.325,0.554],[1.297,-3.261],[-1.245,0.562],[-1.214,-3.269]] #top left, top right, bottom left, bottom right
-SIDE_BOUNDS = [1.961,-0.371] #top and bottom poses, # TODO Adjust for new camera position
+SIDE_BOUNDS = [1.959547,-0.3700] #top and bottom poses, # TODO Adjust for new camera position
 RESOLUTION = [720.0,480.0] #w,h
 
 count = 0
