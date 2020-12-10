@@ -1,8 +1,12 @@
 <?xml version="1.0"?>
 <launch>
 
+    <arg name="error" default="false" />
+    <arg if="$(arg error)" name="pose_mode" value="-e" />
+    <arg unless="$(arg error)" name="pose_mode" value="" />
+
     <!-- Detects the ball and publishes current pose -->
-    <node name="ball_detection" pkg="ball_detection" type="ball_tracker.py" respawn="true" output="screen" />
+    <node name="ball_detection" pkg="ball_detection" type="ball_tracker.py" respawn="true" output="screen" args="$(arg pose_mode)" />
 
     <!-- Uses prior pose estimates to estimate current pose and velocity -->
     <node name="velocity_filter" pkg="ball_detection" type="velocity_filter.py" respawn="true" output="screen" />
