@@ -107,13 +107,13 @@ def image_callback(*msgs):
 
     top_out_image = CvBridge().cv2_to_imgmsg(top_frame, encoding="bgr8")
     side_out_image = CvBridge().cv2_to_imgmsg(side_frame, encoding="bgr8")
-    top_masked_image = CvBridge().cv2_to_imgmsg(top_masked, encoding='bgr8')
-    side_masked_image = CvBridge().cv2_to_imgmsg(side_masked, encoding='bgr8')
+    # top_masked_image = CvBridge().cv2_to_imgmsg(top_masked, encoding='bgr8')
+    # side_masked_image = CvBridge().cv2_to_imgmsg(side_masked, encoding='bgr8')
 
     top_img_pub.publish(top_out_image)
     side_img_pub.publish(side_out_image)
-    top_ball_mask_pub.publish(top_masked_image)
-    side_ball_mask_pub.publish(side_masked_image)
+    # top_ball_mask_pub.publish(top_masked_image)
+    # side_ball_mask_pub.publish(side_masked_image)
 
     #publishes only if there is new pose estimated data (image publisher not affected)
     if estimated_x != None and estimated_y != None and estimated_z != None:
