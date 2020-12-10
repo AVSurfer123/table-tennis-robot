@@ -1,0 +1,18 @@
+node structure 
+
+node: ball_tracker.py
+	|
+	|  topic: /ball_detection/ball_pose [geometry_msgs/Pose]
+	|
+	v
+node: filter (get at least N data points to filter out current pos and vel of the ball)
+	|
+	|   topic: /ball_detection/ball_state_filtered [ball_predict/PoseVelTimed]
+	|
+	v
+node: predict.py (predect the ball pos, vel, and time (rospy simulation time) at the end pos)
+	|
+	|   topic: /ball_detection/ball_end_state [ball_predict/PoseVelTimed]
+	|
+	v
+node: control node
