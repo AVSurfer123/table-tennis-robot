@@ -1,6 +1,7 @@
 #! /usr/bin/python
 
 from __future__ import print_function
+import sys
 
 import cv2
 import message_filters
@@ -25,7 +26,11 @@ RESOLUTION = [720.0,480.0] #w,h
 
 count = 0
 
-def image_callback(top_rgb_image, side_rgb_image, ground_truth_pose):
+def image_callback(*msgs):
+   top_rgb_image, side_rgb_image = msgs[:2]
+   if publish_error:
+      ground_truth_pose = msgs[2]
+
    global count
    estimated_pose = PoseStamped()
    estimated_pose.header.frame_id = 'world'
@@ -118,24 +123,29 @@ def image_callback(top_rgb_image, side_rgb_image, ground_truth_pose):
       print("publish frame {}".format(count))
       ball_pose_pub.publish(estimated_pose)
 
-      pose_error = PoseStamped()
-      pose_error.header.frame_id = 'world'
-      pose_error.header.stamp = top_rgb_image.header.stamp
-      pose_error.pose.position.x = ground_truth_pose.pose.position.x - estimated_pose.pose.position.x
-      pose_error.pose.position.y = ground_truth_pose.pose.position.y - estimated_pose.pose.position.y
-      pose_error.pose.position.z = ground_truth_pose.pose.position.z - estimated_pose.pose.position.z
-      pose_error_pub.publish(pose_error)
-      print("pose error:", np.linalg.norm(numpify(pose_error.pose.position)))
+      if publish_error:
+         pose_error = PoseStamped()
+         pose_error.header.frame_id = 'world'
+         pose_error.header.stamp = top_rgb_image.header.stamp
+         pose_error.pose.position.x = ground_truth_pose.pose.position.x - estimated_pose.pose.position.x
+         pose_error.pose.position.y = ground_truth_pose.pose.position.y - estimated_pose.pose.position.y
+         pose_error.pose.position.z = ground_truth_pose.pose.position.z - estimated_pose.pose.position.z
+         pose_error_pub.publish(pose_error)
+         print("pose error:", np.linalg.norm(numpify(pose_error.pose.position)))
       
       new_data = False
       count+=1
 
 if __name__ == '__main__':
+   publish_error = len(sys.argv) > 1 and sys.argv[1] == '-e'
    rospy.init_node('ball_tracker_node', anonymous=True)
    top_camera_sub = message_filters.Subscriber('/pp/top_camera/image_raw',Image)
    side_camera_sub = message_filters.Subscriber('/pp/side_camera/image_raw',Image)
    ground_truth_sub = message_filters.Subscriber('/ball_detection/true_pose', PoseStamped)
-   ts = message_filters.ApproximateTimeSynchronizer([top_camera_sub,side_camera_sub, ground_truth_sub], 30, .01)
+   subs = [top_camera_sub, side_camera_sub]
+   if publish_error:
+      subs.append(ground_truth_sub)
+   ts = message_filters.ApproximateTimeSynchronizer(subs, 30, .02)
    ts.registerCallback(image_callback)
    rospy.spin()
    
