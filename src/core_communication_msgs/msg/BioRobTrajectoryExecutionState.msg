@@ -1,6 +1,0 @@
-Header header
-uint32 trajectoryExecutionState
-string trajectoryExecutionStateString
-uint32 executed_trajectory_point_index
-float64 trajectory_execution_time
-bool is_trajectory_to_start_point

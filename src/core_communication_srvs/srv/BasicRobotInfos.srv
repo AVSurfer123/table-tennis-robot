@@ -1,8 +1,0 @@
-# request fields
-bool getInfos
----
-# response fields
-uint32 numberActuatedJoints
-string robotName
-string robotType
-string[] connectedSlaves

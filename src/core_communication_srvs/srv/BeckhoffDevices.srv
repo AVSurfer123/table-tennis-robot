@@ -1,6 +1,0 @@
-# request fields
-#empty
----
-#response fields
-int32 numTerminals
-core_communication_msgs/BeckhoffTerminalDescription[] terminals

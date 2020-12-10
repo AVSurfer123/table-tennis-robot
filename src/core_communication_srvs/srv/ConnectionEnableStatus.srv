@@ -1,6 +1,0 @@
-# request fields
-#empty
----
-#response fields
-bool isConnectionEstablished
-bool isRobotEnabled

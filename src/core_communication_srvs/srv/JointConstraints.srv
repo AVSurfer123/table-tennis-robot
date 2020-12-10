@@ -1,8 +1,0 @@
-# request fields
----
-# response fields
-float64[] qMin
-float64[] qMax
-float64[] qDotMax
-float64[] qDDotMax
-float64[] maxJointTorque

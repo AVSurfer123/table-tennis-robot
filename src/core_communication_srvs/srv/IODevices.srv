@@ -1,7 +1,0 @@
-# request fields
-bool getInfos
----
-# response fields
-int32[] id
-string[] name
-float64[] value

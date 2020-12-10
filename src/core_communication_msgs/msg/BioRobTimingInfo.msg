@@ -1,4 +1,0 @@
-uint64 timestamp_nsec
-uint64 timestamp_delta_nsec
-float64 timestamp_second
-float64 timestamp_delta_second
