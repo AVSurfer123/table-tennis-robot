@@ -1,7 +1,7 @@
 #! /usr/bin/python
 
 import rospy
-from ball_predict.msg import PosVelTimed
+from ball_detection.msg import PosVelTimed
 
 def talker():
 	pub = rospy.Publisher("/ball_detection/ball_state_filtered", PosVelTimed, queue_size = 10)

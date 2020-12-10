@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+
+    <!-- Detects the ball and publishes current pose -->
+    <node name="ball_detection" pkg="ball_detection" type="ball_tracker.py" respawn="true" output="screen" />
+
+    <!-- Uses prior pose estimates to estimate current pose and velocity -->
+    <node name="velocity_filter" pkg="ball_detection" type="velocity_filter.py" respawn="true" output="screen" />
+
+</launch>

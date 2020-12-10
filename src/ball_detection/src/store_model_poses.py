@@ -89,7 +89,7 @@ if __name__ == '__main__':
     
     rospack = rospkg.RosPack()
     # get the file path for rospy_tutorials
-    path_to_package = rospack.get_path('ball_predict')
+    path_to_package = rospack.get_path('ball_detection')
     pose_files_dir = os.path.join(path_to_package)
     
     

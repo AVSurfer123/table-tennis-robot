@@ -2,7 +2,7 @@
 
 import rospy
 import numpy as np
-from ball_predict.msg import PosVelTimed
+from ball_detection.msg import PosVelTimed
 import math
 
 class EndPosVelPrediction:
@@ -39,7 +39,7 @@ class EndPosVelPrediction:
 
 	# Once receive the initial state of the ball, calculate the predicted end state and publish
 	def callback(self, data):
-		t_initial = data.stamp.secs + data.stamp.nsecs/1e9
+		t_initial = data.header.stamp.secs + data.header.stamp.nsecs/1e9
 		x = data.pos.x
 		y = data.pos.y
 		z = data.pos.z
@@ -52,6 +52,7 @@ class EndPosVelPrediction:
 		pred_state.vel.x = vx
 		pred_state.vel.y = vy
 		pred_state.hittable = True
+		pred_state.header.frame_id = 'world'
 
 		# check if the ball is not on the table initially
 		if (z < self.table_height+self.ball_raidus
@@ -63,8 +64,8 @@ class EndPosVelPrediction:
 
 		#time for ball to reach the y end position
 		t = abs(y - self.y_end) / vy
-		pred_state.stamp.secs = int(math.modf(t_initial + t)[1])
-		pred_state.stamp.nsecs = math.modf(t_initial + t)[0] * 1e9
+		pred_state.header.stamp.secs = int(math.modf(t_initial + t)[1])
+		pred_state.header.stamp.nsecs = math.modf(t_initial + t)[0] * 1e9
 
 		# check if the final x position is out of the robot workspace
 		x_end = x + vx * t
@@ -120,7 +121,7 @@ class EndPosVelPrediction:
 
 def main():
 	rospy.init_node('ball_predict_node', anonymous=True)
-	EndPosVelPrediction("ball_detection/ball_state_filtered", "/ball_predict/ball_end_state")
+	predictor = EndPosVelPrediction("/ball_detection/ball_state_filtered", "/ball_detection/ball_end_state")
 	rospy.spin()
 
 
