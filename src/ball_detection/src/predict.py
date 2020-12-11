@@ -12,7 +12,7 @@ class EndPosVelPrediction:
 	table_height = 0.76
 	table_length = 2.74
 	table_width = 1.525
-	e = 0.36 				# coefficient of restitution
+	e = 0.6 				# coefficient of restitution
 	ball_radius = 0.02
 	g = -9.81
 
@@ -53,7 +53,7 @@ class EndPosVelPrediction:
 		z_end = self.z_end
 
 		y_net = -1.37
-		y_predict = -1.5
+		y_predict = -1.6
 
 		if vy == 0:
 			self.pubNotHittable()
