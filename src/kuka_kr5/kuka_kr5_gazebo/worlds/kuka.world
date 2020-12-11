@@ -20,12 +20,12 @@
     <include>
       <uri>model://camera</uri>
       <name>top_camera</name>
-      <pose>0 0.5 1.0 0.09 0 0.03</pose>
+      <pose>0 -1.37 4.5 0 1.571 0</pose>
     </include>
     <include>
       <uri>model://side_camera</uri>
       <name>side_camera</name>
-      <pose>-3.0 -1.4 0.8 0 0 0</pose>
+      <pose>-3.0 -1.37 0.76 0 0 0</pose>
     </include>
   </world>
 </sdf>

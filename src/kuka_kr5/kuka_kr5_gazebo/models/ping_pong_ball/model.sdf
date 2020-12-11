@@ -51,7 +51,7 @@
     </link>
 
     <plugin name="initial_velocity" filename="libInitialVelocityPlugin.so">
-        <linear>0 1 0</linear>
+        <linear>0 0 0</linear>
         <angular>0 0 0</angular>
     </plugin>
 
