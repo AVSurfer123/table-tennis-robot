@@ -105,7 +105,11 @@ class EndPosVelPrediction:
 			# NOTE: this method may fail if z end position is too close to the table, may need an offset (t_rb2 < t_rem - 0.2?)
 			
 			# Quadratic equation z_end = v_z t + .5 a * t^2
-			discrim = np.sqrt(vz_out ** 2 + 2*(-self.g)*z_end)
+			try:
+				discrim = np.sqrt(vz_out ** 2 + 2*(self.g)* (z_end - self.table_height - self.ball_radius))
+			except:
+				print("cannot find solution")
+				return 
 			time1, time2 = (-vz_out + discrim)/(-self.g), (-vz_out - discrim)/(-self.g)
 			t_hit = None
 			choose1, choose2 = True, True
@@ -121,15 +125,15 @@ class EndPosVelPrediction:
 				self.pubNotHittable()
 				return
 			elif choose1 == True and choose2 == True:
-				print("quadratic has 2 valid solutions. First was chosen")
-				t_hit = time1
+				print("quadratic has 2 valid solutions. The larger one was chosen")
+				t_hit = max(time1, time2)
 			elif choose1 == True:
 				t_hit = time1
 			elif choose2 == True:
 				t_hit = time2
 			
 			t_end = t_rb1 + t_hit
-			vz_end = vz_out - self.g * t_hit
+			vz_end = vz_out + self.g * t_hit
 			x_end = x + vx*t_end
 			y_end = y + vy*t_end		
 		else:
