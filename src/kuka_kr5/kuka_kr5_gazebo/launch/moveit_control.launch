@@ -46,6 +46,14 @@
   <!-- Publish the true ball state for debugging -->
   <node name="true_ball_pose_publisher" pkg="kuka_kr5_gazebo" type="publish_ball_state.py" />
 
+  <!-- Publish camera frames -->
+  <node name="top_camera_frame_publisher" pkg="tf" type="static_transform_publisher" output="screen"
+    args="0 -1.37 4.5 0 1.571 0 world top_camera_frame 100"
+  />
+  <node name="side_camera_frame_publisher" pkg="tf" type="static_transform_publisher" output="screen"
+    args="-4.0 -1.37 0.76 0 0 0 world side_camera_frame 100"
+  />
+
   <!-- <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
       <param name="/use_gui" value="false" />
       <rosparam param="/source_list">[/joint_states]</rosparam>

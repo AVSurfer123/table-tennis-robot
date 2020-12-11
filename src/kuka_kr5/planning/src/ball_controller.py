@@ -24,7 +24,7 @@ def callback(msg):
         goal = [msg.pos.x, msg.pos.y, msg.pos.z]
         print('Moving arm to:', goal)
         time = rospy.Time.now()
-        controller.move_to_goal(*(goal + HOME_ORI), time=time)
+        controller.move_to_goal(*(goal + HOME_ORI))
         goal[1] -= .2
         total_nsecs = time.nsecs + 1e8
         fractional, integer = math.modf(total_nsecs/1e9)
