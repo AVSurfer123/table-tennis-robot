@@ -22,13 +22,15 @@ def callback(msg):
         goal = msg.pos.x, msg.pos.y, msg.pos.z
         print('Moving arm to:', goal)
         controller.move_to_goal(*(goal + HOME_ORI))
-    elif moving:
-        moving = False
+        rospy.sleep(1)
         controller.move_to_goal(*HOME)
+    # elif moving:
+    #     moving = False
+    #     controller.move_to_goal(*HOME)
 
 if __name__ == '__main__':
     rospy.init_node('ball_controller')
-    controller = RobotController(5)
+    controller = RobotController(10)
     controller.move_to_goal(*HOME)
     sub = rospy.Subscriber('/ball_detection/predicted_ball_state', PosVelTimed, callback, queue_size=10)
     rospy.spin()

@@ -55,10 +55,10 @@ class EndPosVelPrediction:
 		y_net = -1.37
 		y_predict = -1.5
 
-		if vy == 0:
-			self.pubNotHittable()
-			print('ball not moving\n')
-			return
+		# if vy == 0:
+		# 	self.pubNotHittable()
+		# 	print('ball not moving\n')
+		# 	return
 
 		# check if the ball is not on the table initially
 		if (z < self.table_height+self.ball_radius
@@ -95,8 +95,21 @@ class EndPosVelPrediction:
 			# TODO y-position might be too much so ball bounces on very back of table
 			# pred_state.pos.z = z_temp
 			# pred_state.vel.z = vz + self.g*t
-			self.pubNotHittable()
-			print("ball will not hit the table\n")
+			pred_state = PosVelTimed()
+			pred_state.pos.x = x_end
+			pred_state.pos.y = y_end
+			pred_state.pos.z = z_temp
+			pred_state.vel.x = vx
+			pred_state.vel.y = vy
+			pred_state.vel.z = vz + t * self.g
+			pred_state.hittable = True
+			pred_state.header.frame_id = 'world'
+			fractional, integer = math.modf(t_initial + t)
+			pred_state.header.stamp.secs = int(integer)
+			pred_state.header.stamp.nsecs = fractional * 1e9
+			self.pub.publish(pred_state)
+			print("ball did not hit the table or used estimated state after rebound")
+			print('goal position:', x_end, y_end, z_end, '\n')
 			return
 
 		# Otherwise, ball rebounds at least once
@@ -118,7 +131,8 @@ class EndPosVelPrediction:
 			
 			# Quadratic equation z_end = v_z t + .5 a * t^2
 			try:
-				discrim = np.sqrt(vz_out ** 2 + 2*(self.g)* (z_end - self.table_height - self.ball_radius))
+				discrim = math.sqrt(vz_out ** 2 + 2*(self.g)* (z_end - self.table_height - self.ball_radius))
+				print(vz_out, z_end)
 			except:
 				print("cannot find solution")
 				return 
@@ -128,16 +142,16 @@ class EndPosVelPrediction:
 			# time of hit must occur after bounce
 			# time of hit must occur before ball goes off table
 			print("rebound more than once. quadratic solutions for hitting time:", time1, time2)
-			if time1 < 0 or time1 > t_rem:
+			if time1 < 0 or time1 > t_rem or abs(y + (t_rb1 + time1) * vy) > self.ws_radius:
 				choose1 = False
-			if time2 < 0 or time2 > t_rem:
+			if time2 < 0 or time2 > t_rem or abs(y + (t_rb1 + time2) * vy) > self.ws_radius:
 				choose2 = False
 			if choose1 == False and choose2 == False:
 				print("quadratic didn't find any valid solutions")
 				self.pubNotHittable()
 				return
 			elif choose1 == True and choose2 == True:
-				print("quadratic has 2 valid solutions. The larger one was chosen")
+				print("quadratic has 2 valid solutions. chose the larger one")
 				t_hit = max(time1, time2)
 			elif choose1 == True:
 				t_hit = time1
@@ -149,7 +163,7 @@ class EndPosVelPrediction:
 			x_end = x + vx*t_end
 			y_end = y + vy*t_end		
 		else:
-			z_end = z+vz_out*t_rem + 0.5*self.g*t_rem**2
+			z_end = self.table_height + self.ball_radius +vz_out*t_rem + 0.5*self.g*t_rem**2
 			vz_end = vz_out + self.g*t_rem
 			print("ball rebounds once and hittable")
 			print('goal position:', x_end, y_end, z_end, '\n')

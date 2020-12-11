@@ -12,11 +12,11 @@
       <name>ping_pong_table</name>
       <pose>-0.915 0 -.062 0 0 -1.570796</pose>
     </include>
-    <include>
+    <!-- <include>
       <uri>model://ping_pong_ball</uri>
       <name>ping_pong_ball</name>
       <pose>0 -2.0 0.9 0 0 0</pose>
-    </include>
+    </include> -->
     <include>
       <uri>model://camera</uri>
       <name>top_camera</name>
