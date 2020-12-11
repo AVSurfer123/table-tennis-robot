@@ -10,7 +10,7 @@ class EndPosVelPrediction:
 	table_height = 0.76
 	table_length = 2.74
 	table_width = 1.525
-	e = 0.36 				# coefficient of restitution
+	e = 0.87 				# coefficient of restitution
 	ball_radius = 0.02
 	g = -9.81
 

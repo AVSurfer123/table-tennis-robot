@@ -41,7 +41,7 @@ def ema(pos, time, direction, mix_constant):
     return pos_filtered, vel_filtered
 
 last_msg = None
-history = deque([], maxlen=15)
+history = deque([], maxlen=10)
 
 def convert_to_numpy(history):
     pos = []
@@ -68,7 +68,7 @@ def vel_callback(pose_msg):
     # Can only determine velocity with 2 points
     if len(history) < 2:
         last_msg = pose_msg
-        return
+        return     
 
     pos, time = convert_to_numpy(history)
 
