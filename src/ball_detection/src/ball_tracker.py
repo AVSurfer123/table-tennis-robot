@@ -61,7 +61,7 @@ def image_callback(*msgs):
     side_interest_pixels=cv2.findNonZero(side_mask)
 
     #ball perception top image
-    if top_interest_pixels != None and len(top_interest_pixels) > 0:
+    if top_interest_pixels is not None and len(top_interest_pixels) > 0:
         #print(len(top_interest_pixels))
         x_max = max(top_interest_pixels,key= lambda p: p[0][0])[0][0]
         x_min = min(top_interest_pixels,key= lambda p: p[0][0])[0][0]
@@ -84,7 +84,7 @@ def image_callback(*msgs):
         estimated_y = float(avg_max_pose_y - (c_x / RESOLUTION[0]) * (avg_max_pose_y - avg_min_pose_y))
 
     #ball perception side image
-    if side_interest_pixels != None and len(side_interest_pixels) > 0:
+    if side_interest_pixels is not None and len(side_interest_pixels) > 0:
         #print(len(side_interest_pixels))
         x_max = max(side_interest_pixels,key= lambda p: p[0][0])[0][0]
         x_min = min(side_interest_pixels,key= lambda p: p[0][0])[0][0]
@@ -102,9 +102,6 @@ def image_callback(*msgs):
         lower_bound = SIDE_BOUNDS[1]
         estimated_z = float(upper_bound - (c_y / RESOLUTION[1]) * (upper_bound - lower_bound))
    
-    if not (estimated_x is None and estimated_y is None and estimated_z is None):
-        print("Estimated pose:", estimated_x, estimated_y, estimated_z)
-
     top_out_image = CvBridge().cv2_to_imgmsg(top_frame, encoding="bgr8")
     side_out_image = CvBridge().cv2_to_imgmsg(side_frame, encoding="bgr8")
     # top_masked_image = CvBridge().cv2_to_imgmsg(top_masked, encoding='bgr8')
@@ -121,7 +118,7 @@ def image_callback(*msgs):
         estimated_pose.point.y = estimated_y
         estimated_pose.point.z = estimated_z
 
-        print("publish frame {}".format(count))
+        print("Estimated pose:", estimated_x, estimated_y, estimated_z)
         ball_pose_pub.publish(estimated_pose)
 
         if publish_error:
