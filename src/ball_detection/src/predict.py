@@ -50,6 +50,10 @@ class EndPosVelPrediction:
 		y_end = self.y_end
 		z_end = self.z_end
 
+		if vy == 0 or vx == 0:
+			self.pubNotHittable()
+			return
+
 		# check if the ball is not on the table initially
 		if (z < self.table_height+self.ball_radius
 				or abs(x) > self.table_width/2

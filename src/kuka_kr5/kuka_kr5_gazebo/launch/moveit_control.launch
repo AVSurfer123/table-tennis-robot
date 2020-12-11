@@ -3,7 +3,6 @@
 
   <arg name="robot_name" default="kuka" />
   <arg name="use_ros_control" default="false" />
-  <arg name="motors_controller_type" default="PositionJointInterface" /> <!-- PositionJointInterface EffortJointInterface, velocity, position set it just for link 4 and 5-->
 
   <!-- these are the arguments you can pass this launch file, for example paused:=true -->
   <arg name="paused" default="false"/>
@@ -28,7 +27,6 @@
   <include file="$(find kr5_description)/launch/kr5_upload.launch">
      <arg name="robot_name" value="$(arg robot_name)" />
      <arg name="use_ros_control" value="$(arg use_ros_control)" />
-     <arg name="motors_controller_type" value="$(arg motors_controller_type)" />
   </include>
 
   <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
@@ -68,8 +66,8 @@
           <arg name="publish_monitored_planning_scene" value="true" />
   </include>
 
-  <include file="$(find kuka_moveit_config)/launch/moveit_rviz.launch">
+  <!-- <include file="$(find kuka_moveit_config)/launch/moveit_rviz.launch">
           <arg name="config" value="true" />
-  </include>
+  </include> -->
 
 </launch>
