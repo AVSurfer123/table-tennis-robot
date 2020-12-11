@@ -16,6 +16,9 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
+  <run_depend>trac_ik_kinematics_plugin</run_depend>
+  <run_depend>kuka_ikfast_kr5_planning_group_plugin</run_depend>
+
   <run_depend>moveit_ros_move_group</run_depend>
   <run_depend>moveit_fake_controller_manager</run_depend>
   <run_depend>moveit_kinematics</run_depend>

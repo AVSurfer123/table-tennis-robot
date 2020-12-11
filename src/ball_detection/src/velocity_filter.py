@@ -82,6 +82,7 @@ def vel_callback(pose_msg):
         setattr(filtered.vel, direction, vel_filtered[-1])
 
     print('Filtered position:', filtered.pos.x, filtered.pos.y, filtered.pos.z)
+    print("Filtered velocity:", filtered.vel.x, filtered.vel.y, filtered.vel.z)
     vel_pub.publish(filtered)
     last_msg = pose_msg
 

@@ -1,5 +1,7 @@
 #! /usr/bin/python
 
+from __future__ import print_function
+
 import rospy
 import numpy as np
 from ball_detection.msg import PosVelTimed
@@ -50,8 +52,12 @@ class EndPosVelPrediction:
 		y_end = self.y_end
 		z_end = self.z_end
 
-		if vy == 0 or vx == 0:
+		y_net = -1.37
+		y_predict = -1.5
+
+		if vy == 0:
 			self.pubNotHittable()
+			print('ball not moving\n')
 			return
 
 		# check if the ball is not on the table initially
@@ -62,10 +68,16 @@ class EndPosVelPrediction:
 			print('not on table\n')
 			return
 
+		if y < y_predict:
+			self.pubNotHittable()
+			print("too early to move\n")
+			return
+
 		#time for ball to reach the y end position
 		t = (y_end - y) / vy
 		if t < 0:
 			self.pubNotHittable()
+			print("ball moving in wrong direction\n")
 			return
 
 		# check if the final x position is out of the robot workspace
@@ -135,7 +147,8 @@ class EndPosVelPrediction:
 		else:
 			z_end = z+vz_out*t_rem + 0.5*self.g*t_rem**2
 			vz_end = vz_out + self.g*t_rem
-			print("ball rebounds once and hittable\n")
+			print("ball rebounds once and hittable")
+			print('goal position:', x_end, y_end, z_end, '\n')
 		
 		pred_state = PosVelTimed()
 		pred_state.pos.x = x_end
@@ -150,7 +163,6 @@ class EndPosVelPrediction:
 		pred_state.header.stamp.secs = int(integer)
 		pred_state.header.stamp.nsecs = fractional * 1e9
 
-		print('published:', pred_state)
 		self.pub.publish(pred_state)
 
 
