@@ -44,7 +44,7 @@ class RobotController:
         self.group = moveit_commander.MoveGroupCommander(GROUP_NAME)
 
         # Set the maximum time MoveIt will try to plan before giving up
-        self.group.set_planning_time(1)
+        self.group.set_planning_time(.25)
 
         # Set maximum velocity scaling
         self.group.set_max_velocity_scaling_factor(1.0)
@@ -102,7 +102,7 @@ class RobotController:
         if not self.group.execute(plan, True):
             print("Execution failed")
 
-    def move_to_goal(self, x, y, z, or_x=0.0, or_y=-1.0, or_z=0.0, or_w=0.0, time=None):
+    def plan_to_goal(self, x, y, z, or_x=0.0, or_y=-1.0, or_z=0.0, or_w=0.0, time=None):
         try:
             goal = PoseStamped()
             goal.header.frame_id = "world"
@@ -146,11 +146,17 @@ class RobotController:
                     # new_traj.joint_trajectory.points[i].accelerations.append(traj.joint_trajectory.points[i].accelerations[j] * self.speed * self.speed)
                     new_traj.joint_trajectory.points[i].positions.append(traj.joint_trajectory.points[i].positions[j])
 
-            if not self.group.execute(new_traj, True):
-                print("Execution failed")
+            return new_traj
 
         except Exception as e:
             traceback.print_exc()
+        return None
+
+    def move_to_goal(self, *args, **kwargs):
+        plan = self.plan_to_goal(*args, **kwargs)
+        if not self.group.execute(plan, True):
+            print("Execution failed")
+
 
 
 if __name__ == '__main__':
