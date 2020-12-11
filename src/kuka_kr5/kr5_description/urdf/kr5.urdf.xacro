@@ -178,7 +178,7 @@
   
     <link name="${prefix}ee_link">
       <inertial>
-          <origin xyz="0.00983949894991115 -2.78372724487979E-05 0.17275327" rpy="0 0 0" />
+          <origin xyz="0 -.01 0.17275327" rpy="0 0 0" />
           <mass value="0.085" />
           <inertia ixx="0.002858" ixy="0" ixz="0" iyy="0.002987" iyz="0" izz="0.0001420" /> <!-- ${0.08333333333*plate_mass*plate_width}-->
       </inertial>
@@ -264,16 +264,16 @@
     <xacro:kr_arm_gazebo prefix="${prefix}" />
 
     <!-- ROS base_link to UR 'Base' Coordinates transform -->
-    <link name="${prefix}base"/>
-    <joint name="${prefix}base_link-base_fixed_joint" type="fixed">
-      <!-- NOTE: this rotation is only needed as long as base_link itself is
+    <!-- NOTE: this rotation is only needed as long as base_link itself is
                  not corrected wrt the real robot (ie: rotated over 180
                  degrees)
       -->
+    <!-- <link name="${prefix}base"/>
+    <joint name="${prefix}base_link-base_fixed_joint" type="fixed">
       <origin xyz="0 0 0" rpy="0 0 ${-pi}"/>
       <parent link="${prefix}base_link"/>
       <child link="${prefix}base"/>
-    </joint>
+    </joint> -->
 
     <!-- Frame coincident with all-zeros TCP on UR controller -->
     <!-- <link name="${prefix}tool0"/>
