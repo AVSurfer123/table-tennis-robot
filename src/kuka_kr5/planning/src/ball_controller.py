@@ -20,16 +20,16 @@ def callback(msg):
     global moving
     if msg.hittable:
         moving = True
-        # controller.hit_ball(msg.pos)
         goal = [msg.pos.x, msg.pos.y, msg.pos.z]
         print('Moving arm to:', goal)
-        time = rospy.Time.now()
-        controller.move_to_goal(*(goal + HOME_ORI))
-        goal[1] -= .2
-        total_nsecs = time.nsecs + 1e8
-        fractional, integer = math.modf(total_nsecs/1e9)
-        time.secs += int(integer)
-        time.nsecs += fractional*1e9
+        # controller.hit_ball(goal, HOME_ORI)
+        # time = rospy.Time.now()
+        controller.move_to_goal(*(goal + HOME_ORI), time=msg.header.stamp)
+        # goal[1] -= .2
+        # total_nsecs = time.nsecs + 1e8
+        # fractional, integer = math.modf(total_nsecs/1e9)
+        # time.secs += int(integer)
+        # time.nsecs += fractional*1e9
         # controller.move_to_goal(*(goal + HOME_ORI), time=time)
     elif moving:
         moving = False

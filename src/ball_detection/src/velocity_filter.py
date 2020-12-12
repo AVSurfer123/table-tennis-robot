@@ -11,7 +11,7 @@ from geometry_msgs.msg import PointStamped
 from ball_detection.msg import PosVelTimed
 
 
-MIXING = [0.25, 0.25, 0.5]  # x, y, z
+MIXING = [0.15, 0.15, 0.25]  # x, y, z
 
 def ema(pos, time, direction, mix_constant):
     acc = 0

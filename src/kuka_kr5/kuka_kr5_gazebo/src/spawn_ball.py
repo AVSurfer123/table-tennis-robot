@@ -332,7 +332,7 @@ if __name__ == "__main__":
     rospy.init_node('spawn_model')
     
     pose = [0.2, -2.5, 1.5]
-    vel = [0, 4.0, 1.5, 0, 0, 0]
+    vel = [0, 3.0, 2, 0, 0, 0]
 
     while not rospy.is_shutdown():
         while True:
@@ -351,7 +351,7 @@ if __name__ == "__main__":
             if vel_input == 'r':
                 x = round(random.uniform(-0.5, 0.5), 2)
                 y = round(random.uniform(2.0, 3.0), 2)
-                z = round(random.uniform(1.5, 2.5), )
+                z = round(random.uniform(1.5, 2.5), 2)
                 vel = [x, y, z, 0, 0, 0]
             elif len(vel_input) > 0:
                 try:
