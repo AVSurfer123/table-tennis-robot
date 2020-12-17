@@ -7,10 +7,11 @@ import numpy as np
 import traceback
 import moveit_commander
 
-from moveit_msgs.msg import OrientationConstraint, Constraints, CollisionObject, RobotTrajectory, DisplayTrajectory
+from moveit_msgs.msg import OrientationConstraint, Constraints, CollisionObject, RobotTrajectory, DisplayTrajectory, RobotState
 from trajectory_msgs.msg import JointTrajectoryPoint
 from geometry_msgs.msg import PoseStamped, Pose, Point
 from shape_msgs.msg import SolidPrimitive
+from sensor_msgs.msg import JointState
 
 GROUP_NAME = "kr5_planning_group"
 
@@ -44,7 +45,7 @@ class RobotController:
         self.group = moveit_commander.MoveGroupCommander(GROUP_NAME)
 
         # Set the maximum time MoveIt will try to plan before giving up
-        self.group.set_planning_time(1)
+        self.group.set_planning_time(.25)
 
         # Set maximum velocity scaling
         self.group.set_max_velocity_scaling_factor(1.0)
@@ -83,26 +84,56 @@ class RobotController:
         # group.set_goal_position_tolerance(.01)
         # group.set_goal_orientation_tolerance(.001)
 
-    def hit_ball(self, goal):
-        ball_pose = Pose()
-        copy_attr(ball_pose.position, goal)
-        end_pose = Pose()
-        copy_attr(end_pose.position, goal)
-        end_pose.position.y -= .2
-        waypoints = [self.group.get_current_pose().pose, ball_pose, end_pose]
+    def hit_ball(self, pos, orient, vel=.4, time=None):
+        # ball_pose = Pose()
+        # copy_attr(ball_pose.position, goal)
+        # end_pose = Pose()
+        # copy_attr(end_pose.position, goal)
+        # end_pose.position.y -= .2
+        # waypoints = [self.group.get_current_pose().pose, ball_pose, end_pose]
 
-        plan, fraction = self.group.compute_cartesian_path(waypoints, 0.01, 0)
-        print("moving arm:", waypoints, "in %d points" % len(plan.joint_trajectory.points), "Fraction:", fraction)
+        # plan, fraction = self.group.compute_cartesian_path(waypoints, 0.01, 0)
+        # print("moving arm:", waypoints, "in %d points" % len(plan.joint_trajectory.points), "Fraction:", fraction)
 
-        display = DisplayTrajectory()
-        display.trajectory_start = self.robot.get_current_state()
-        display.trajectory.append(plan)
-        self.display_pub.publish(display)
+        # display = DisplayTrajectory()
+        # display.trajectory_start = self.robot.get_current_state()
+        # display.trajectory.append(plan)
+        # self.display_pub.publish(display)
 
-        if not self.group.execute(plan, True):
+        plan1 = self.plan_to_goal(*(pos + orient), time=time)
+        
+        start = RobotState()
+        start.joint_state.header.stamp = plan1.joint_trajectory.header.stamp + plan1.joint_trajectory.points[-1].time_from_start
+        start.joint_state.name = plan1.joint_trajectory.joint_names
+        start.joint_state.position = plan1.joint_trajectory.points[-1].positions
+
+        CENTER = np.array([0, -1.37 - .685, .76])
+        vector = CENTER - np.array(pos)
+        vector = vector / np.linalg.norm(vector)
+        print('delta vector:', vector)
+        pos += vector * .2 # Move towards center of other side by .2
+
+        plan2 = self.plan_to_goal(*(list(pos) + orient), start=start, time=time)
+
+        print(plan1)
+        print(len(plan1.joint_trajectory.points), '--------', len(plan2.joint_trajectory.points))
+        print(plan2)
+
+        traj = RobotTrajectory()
+        traj.joint_trajectory.header = plan1.joint_trajectory.header
+        traj.joint_trajectory.joint_names = plan1.joint_trajectory.joint_names
+        traj.joint_trajectory.points = plan1.joint_trajectory.points
+        # traj.joint_trajectory.points.pop(-1)
+        for p in plan2.joint_trajectory.points[1:]:
+            p.time_from_start += plan1.joint_trajectory.points
+            traj.joint_trajectory.points.append(p)
+        
+        print("combined traj:", traj)
+        
+        if not self.group.execute(traj, True):
             print("Execution failed")
 
-    def move_to_goal(self, x, y, z, or_x=0.0, or_y=-1.0, or_z=0.0, or_w=0.0, time=None):
+    def plan_to_goal(self, x, y, z, or_x=0.0, or_y=-1.0, or_z=0.0, or_w=0.0, start=None, time=None):
         try:
             goal = PoseStamped()
             goal.header.frame_id = "world"
@@ -121,7 +152,10 @@ class RobotController:
             goal.pose.orientation.w = or_w
 
             self.group.set_pose_target(goal)
-            self.group.set_start_state_to_current_state()
+            if start is None:
+                self.group.set_start_state_to_current_state()
+            else:
+                self.group.set_start_state(start)
 
             constraints = Constraints()
             # constraints.orientation_constraints = orien_const
@@ -146,11 +180,17 @@ class RobotController:
                     # new_traj.joint_trajectory.points[i].accelerations.append(traj.joint_trajectory.points[i].accelerations[j] * self.speed * self.speed)
                     new_traj.joint_trajectory.points[i].positions.append(traj.joint_trajectory.points[i].positions[j])
 
-            if not self.group.execute(new_traj, True):
-                print("Execution failed")
+            return new_traj
 
         except Exception as e:
             traceback.print_exc()
+        return None
+
+    def move_to_goal(self, *args, **kwargs):
+        plan = self.plan_to_goal(*args, **kwargs)
+        if not self.group.execute(plan, True):
+            print("Execution failed")
+
 
 
 if __name__ == '__main__':

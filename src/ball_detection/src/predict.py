@@ -25,6 +25,7 @@ class EndPosVelPrediction:
 	x_limit_squared = ws_radius**2 - (abs(robot_pos_y) - abs(y_end))**2	
 
 
+
 	def __init__(self, pos_vel_sub_topic, pos_vel_pub_topic):
 		# pos_vel_sub_topic: topic to get the staring time(ros simulation time), initial position 
 		#	and velocity of a ball for prediciton
@@ -32,6 +33,7 @@ class EndPosVelPrediction:
 		#	ros simulation time
 		self.sub = rospy.Subscriber(pos_vel_sub_topic, PosVelTimed, self.callback)
 		self.pub = rospy.Publisher(pos_vel_pub_topic, PosVelTimed, queue_size = 10)
+		self.moving = False
 
 
 	# publish the state immediately if not hittable
@@ -53,7 +55,8 @@ class EndPosVelPrediction:
 		z_end = self.z_end
 
 		y_net = -1.37
-		y_predict = -1.6
+		y_begin = -1.6
+		y_predict = -.8
 
 		if vy == 0:
 			self.pubNotHittable()
@@ -68,16 +71,20 @@ class EndPosVelPrediction:
 			print('not on table\n')
 			return
 
-		if y < y_predict:
+		# check if we are in prediction region
+		if y < y_begin:
 			self.pubNotHittable()
 			print("too early to move\n")
+			return
+		if y > y_predict:
+			print("ball past prediction line")
 			return
 
 		#time for ball to reach the y end position
 		t = (y_end - y) / vy
 		if t < 0:
 			self.pubNotHittable()
-			print("ball moving in wrong direction\n")
+			print("ball moving in wrong direction or past end\n")
 			return
 
 		# check if the final x position is out of the robot workspace
@@ -95,48 +102,49 @@ class EndPosVelPrediction:
 			# TODO y-position might be too much so ball bounces on very back of table
 			# pred_state.pos.z = z_temp
 			# pred_state.vel.z = vz + self.g*t
-			pred_state = PosVelTimed()
-			pred_state.pos.x = x_end
-			pred_state.pos.y = y_end
-			pred_state.pos.z = z_temp
-			pred_state.vel.x = vx
-			pred_state.vel.y = vy
-			pred_state.vel.z = vz + t * self.g
-			pred_state.hittable = True
-			pred_state.header.frame_id = 'world'
-			fractional, integer = math.modf(t_initial + t)
-			pred_state.header.stamp.secs = int(integer)
-			pred_state.header.stamp.nsecs = fractional * 1e9
-			self.pub.publish(pred_state)
-			print("ball did not hit the table or used estimated state after rebound")
-			print('goal position:', x_end, y_end, z_end, '\n')
+			if y > -self.table_length/2:
+				pred_state = PosVelTimed()
+				pred_state.pos.x = x_end
+				pred_state.pos.y = y_end
+				pred_state.pos.z = z_temp
+				pred_state.vel.x = vx
+				pred_state.vel.y = vy
+				pred_state.vel.z = vz + t * self.g
+				pred_state.hittable = True
+				pred_state.header.frame_id = 'world'
+				fractional, integer = math.modf(t_initial + t)
+				pred_state.header.stamp.secs = int(integer)
+				pred_state.header.stamp.nsecs = fractional * 1e9
+				self.pub.publish(pred_state)
+				print("ball did not hit the table, might used estimated state after rebound")
+				print('goal position:', x_end, y_end, z_end, '\n')
+			else:
+				self.pubNotHittable()
+				print("ball will not hit the table:", z_temp)
 			return
 
 		# Otherwise, ball rebounds at least once
 
 		# find the time for the first rebound
+		# Negative discriminant always as this produces the most right zero for the parabola
 		t_rb1 = (-vz - math.sqrt(vz**2 - 2 * self.g * (z - self.table_height - self.ball_radius))) / self.g
+		print("time till rebound:", t_rb1)
 		# find the z velocity just before rebound
 		vz_in = -math.sqrt(-2 * self.g * (z - self.table_height - self.ball_radius) + vz**2)
 		# find the z velocity just after rebound
 		vz_out = -self.e * vz_in
 
 		# time for second rebound
-		t_rb2 = 2 * vz_out / -self.g
+		t_rb2 = -2 * vz_out / self.g
 		# time remains from the first rebound
 		t_rem = t - t_rb1
 		if t_rb2 < t_rem:
 			# second rebound before reaching y end position
 			# NOTE: this method may fail if z end position is too close to the table, may need an offset (t_rb2 < t_rem - 0.2?)
 			
-			# Quadratic equation z_end = v_z t + .5 a * t^2
-			try:
-				discrim = math.sqrt(vz_out ** 2 + 2*(self.g)* (z_end - self.table_height - self.ball_radius))
-				print(vz_out, z_end)
-			except:
-				print("cannot find solution")
-				return 
-			time1, time2 = (-vz_out + discrim)/(-self.g), (-vz_out - discrim)/(-self.g)
+			# Quadratic equation z_end - table_heigh - ball_radius = v_z t + .5 a * t^2
+			discrim = math.sqrt(vz_out ** 2 + 2*self.g*(z_end - self.table_height - self.ball_radius))
+			time1, time2 = -(-vz_out + discrim)/self.g, -(-vz_out - discrim)/self.g
 			t_hit = None
 			choose1, choose2 = True, True
 			# time of hit must occur after bounce
@@ -163,7 +171,7 @@ class EndPosVelPrediction:
 			x_end = x + vx*t_end
 			y_end = y + vy*t_end		
 		else:
-			z_end = self.table_height + self.ball_radius +vz_out*t_rem + 0.5*self.g*t_rem**2
+			z_end = self.table_height + self.ball_radius + vz_out*t_rem + 0.5*self.g*t_rem**2
 			vz_end = vz_out + self.g*t_rem
 			print("ball rebounds once and hittable")
 			print('goal position:', x_end, y_end, z_end, '\n')
