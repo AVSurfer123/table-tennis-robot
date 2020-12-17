@@ -53,12 +53,12 @@ class EndPosVelPrediction:
 		z_end = self.z_end
 
 		y_net = -1.37
-		y_predict = -1.5
+		y_predict = -1.6
 
-		# if vy == 0:
-		# 	self.pubNotHittable()
-		# 	print('ball not moving\n')
-		# 	return
+		if vy == 0:
+			self.pubNotHittable()
+			print('ball not moving\n')
+			return
 
 		# check if the ball is not on the table initially
 		if (z < self.table_height+self.ball_radius
@@ -180,7 +180,7 @@ class EndPosVelPrediction:
 		fractional, integer = math.modf(t_initial + t)
 		pred_state.header.stamp.secs = int(integer)
 		pred_state.header.stamp.nsecs = fractional * 1e9
-
+		
 		self.pub.publish(pred_state)
 
 

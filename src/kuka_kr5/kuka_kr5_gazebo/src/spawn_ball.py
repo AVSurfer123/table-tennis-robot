@@ -205,8 +205,6 @@ class SpawnModel():
     def callSpawnService(self, vel):
 
         # wait for model to exist
-        rospy.init_node('spawn_model')
-
         if not self.wait_for_model == "":
           rospy.Subscriber("%s/model_states"%(self.gazebo_namespace), ModelStates, self.checkForModel)
           r= rospy.Rate(10)
@@ -236,7 +234,6 @@ class SpawnModel():
             sys.exit(0)
 
           model_xml = self.setVelocity(model_xml, vel)
-          print(model_xml)
           rospy.sleep(1)
 
         # ROS Parameter
@@ -332,50 +329,48 @@ class SpawnModel():
 
 
 if __name__ == "__main__":
-
-    pose = [0, 0, 0]
-    while True:
-        pose_input = raw_input("Enter position or enter for [0.2, -2.5, 1.5]: ")
-        if len(pose_input) == 0:
-            pose = [0.2, -3.5, 1.5]
-        else:
-          try:
-              pose_input = pose_input.split(' ')
-              pose = [float(pose_input[0]), float(pose_input[1]), float(pose_input[2])]
-          except Exception as e:
-              print(e)
-              continue
-        break
+    rospy.init_node('spawn_model')
     
-    vel = [0, 0, 0, 0, 0, 0]
-    while True:
-        vel_input = raw_input("Enter xyz velocities or 'r' for random or enter for [0, 4.0, 1.5]: ")
-        if len(vel_input) == 0:
-            vel = [0, 4.5, 1.5, 0, 0, 0]
-        elif vel_input == 'r':
-            x = round(random.uniform(-0.5, 0.5), 2)
-            y = round(random.uniform(2.0, 3.0), 2)
-            z = round(random.uniform(1.5, 2.5), )
-            vel = [x, y, z, 0, 0, 0]
-        else:
-            try:
-                vel_input = vel_input.split(' ')
-                vel = [float(vel_input[0]), float(vel_input[1]), float(vel_input[2]), 0, 0, 0]
-            except Exception as e:
-                print(e)
-                continue
-        break
+    pose = [0.2, -2.5, 1.5]
+    vel = [0, 4.0, 1.5, 0, 0, 0]
 
-    print("SpawnModel script started") # make this a print incase roscore has not been started
-    sm = SpawnModel()
-    # sm.parseUserInputs()
+    while not rospy.is_shutdown():
+        while True:
+            pose_input = raw_input("Enter position or enter for last value {}: ".format(pose))
+            if len(pose_input) > 0:
+              try:
+                  pose_input = pose_input.split(' ')
+                  pose = [float(pose_input[0]), float(pose_input[1]), float(pose_input[2])]
+              except Exception as e:
+                  print(e)
+                  continue
+            break
+        
+        while True:
+            vel_input = raw_input("Enter xyz velocities or 'r' for random or enter for last value {}: ".format(vel))
+            if vel_input == 'r':
+                x = round(random.uniform(-0.5, 0.5), 2)
+                y = round(random.uniform(2.0, 3.0), 2)
+                z = round(random.uniform(1.5, 2.5), )
+                vel = [x, y, z, 0, 0, 0]
+            elif len(vel_input) > 0:
+                try:
+                    vel_input = vel_input.split(' ')
+                    vel = [float(vel_input[0]), float(vel_input[1]), float(vel_input[2]), 0, 0, 0]
+                except Exception as e:
+                    print(e)
+                    continue
+            break
 
-    sm.setModelName("ping_pong_ball")
-    sm.callDeleteService()
-    sm.setPose(pose)
-    sm.callSpawnService(vel)
-    print("spawning " + sm.model_name)
-    rospy.sleep(1)
+        sm = SpawnModel()
+        # sm.parseUserInputs()
+
+        sm.setModelName("ping_pong_ball")
+        sm.callDeleteService()
+        sm.setPose(pose)
+        sm.callSpawnService(vel)
+        print("spawning " + sm.model_name)
+        rospy.sleep(1)
 
     if sm.bond:
         rospy.on_shutdown(sm.callDeleteService)

@@ -7,7 +7,7 @@ import numpy as np
 import traceback
 import moveit_commander
 
-from moveit_msgs.msg import OrientationConstraint, Constraints, CollisionObject, RobotTrajectory
+from moveit_msgs.msg import OrientationConstraint, Constraints, CollisionObject, RobotTrajectory, DisplayTrajectory
 from trajectory_msgs.msg import JointTrajectoryPoint
 from geometry_msgs.msg import PoseStamped, Pose, Point
 from shape_msgs.msg import SolidPrimitive
@@ -20,6 +20,10 @@ TABLE_CENTER.pose = Pose(position=Point(0, -1.37, .76))
 TABLE_CENTER.pose.orientation.w = 1
 
 TABLE_SIZE = [1.525, 2.74, 0.0201]
+
+def copy_attr(a, b, attributes=['x', 'y', 'z']):
+    for attr in attributes:
+        setattr(a, attr, getattr(b, attr))
 
 class RobotController:
 
@@ -45,6 +49,9 @@ class RobotController:
         # Set maximum velocity scaling
         self.group.set_max_velocity_scaling_factor(1.0)
         self.group.set_max_acceleration_scaling_factor(1.0)
+
+        # For displaying plans to RVIZ
+        self.display_pub = rospy.Publisher('/move_group/display_planned_path', DisplayTrajectory, queue_size=10)
 
         print(self.group.get_current_pose())
         print(self.group.get_end_effector_link())
@@ -76,15 +83,31 @@ class RobotController:
         # group.set_goal_position_tolerance(.01)
         # group.set_goal_orientation_tolerance(.001)
 
-    def follow_trajectory(self, trajectory):
-        # TODO: Will
-        pass
+    def hit_ball(self, goal):
+        ball_pose = Pose()
+        copy_attr(ball_pose.position, goal)
+        end_pose = Pose()
+        copy_attr(end_pose.position, goal)
+        end_pose.position.y -= .2
+        waypoints = [self.group.get_current_pose().pose, ball_pose, end_pose]
 
+        plan, fraction = self.group.compute_cartesian_path(waypoints, 0.01, 0)
+        print("moving arm:", waypoints, "in %d points" % len(plan.joint_trajectory.points), "Fraction:", fraction)
 
-    def move_to_goal(self, x, y, z, or_x=0.0, or_y=-1.0, or_z=0.0, or_w=0.0, orien_const=[]):
+        display = DisplayTrajectory()
+        display.trajectory_start = self.robot.get_current_state()
+        display.trajectory.append(plan)
+        self.display_pub.publish(display)
+
+        if not self.group.execute(plan, True):
+            print("Execution failed")
+
+    def move_to_goal(self, x, y, z, or_x=0.0, or_y=-1.0, or_z=0.0, or_w=0.0, time=None):
         try:
             goal = PoseStamped()
             goal.header.frame_id = "world"
+            if time is not None:
+                goal.header.stamp = time
 
             #x, y, and z position
             goal.pose.position.x = x
@@ -101,7 +124,7 @@ class RobotController:
             self.group.set_start_state_to_current_state()
 
             constraints = Constraints()
-            constraints.orientation_constraints = orien_const
+            # constraints.orientation_constraints = orien_const
             self.group.set_path_constraints(constraints)
 
             traj = self.group.plan()
@@ -120,7 +143,7 @@ class RobotController:
                     print(traj.joint_trajectory.points[i].velocities)
                 for j in range(len(traj.joint_trajectory.points[i].velocities)):
                     new_traj.joint_trajectory.points[i].velocities.append(traj.joint_trajectory.points[i].velocities[j] * self.speed)
-                    new_traj.joint_trajectory.points[i].accelerations.append(traj.joint_trajectory.points[i].accelerations[j] * self.speed * self.speed)
+                    # new_traj.joint_trajectory.points[i].accelerations.append(traj.joint_trajectory.points[i].accelerations[j] * self.speed * self.speed)
                     new_traj.joint_trajectory.points[i].positions.append(traj.joint_trajectory.points[i].positions[j])
 
             if not self.group.execute(new_traj, True):
@@ -132,7 +155,7 @@ class RobotController:
 
 if __name__ == '__main__':
     rospy.init_node('path_planning')
-    controller = RobotController(5.0)
+    controller = RobotController(10.0)
     while not rospy.is_shutdown():
         line = raw_input("Enter goal: ")
         if len(line) == 0:
