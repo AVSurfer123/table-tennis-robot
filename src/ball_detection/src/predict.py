@@ -58,7 +58,7 @@ class EndPosVelPrediction:
 		y_begin = -1.6
 		y_predict = -.8
 
-		if vy == 0:
+		if vy <= 0:
 			self.pubNotHittable()
 			print('ball not moving\n')
 			return
