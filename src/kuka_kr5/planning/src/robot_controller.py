@@ -133,7 +133,7 @@ class RobotController:
         if not self.group.execute(traj, True):
             print("Execution failed")
 
-    def plan_to_goal(self, x, y, z, or_x=0.0, or_y=-1.0, or_z=0.0, or_w=0.0, start=None, time=None):
+    def plan_to_goal(self, x, y, z, or_x=0.0, or_y=-1.0, or_z=0.0, or_w=0.0, start=None, time=None, vp = [0, 0, 0]):
         try:
             goal = PoseStamped()
             goal.header.frame_id = "world"
@@ -179,6 +179,7 @@ class RobotController:
                     new_traj.joint_trajectory.points[i].velocities.append(traj.joint_trajectory.points[i].velocities[j] * self.speed)
                     # new_traj.joint_trajectory.points[i].accelerations.append(traj.joint_trajectory.points[i].accelerations[j] * self.speed * self.speed)
                     new_traj.joint_trajectory.points[i].positions.append(traj.joint_trajectory.points[i].positions[j])
+                new_traj.joint_trajectory.points[-1].velocities = [vp[0], vp[1], vp[2], 0, 0, 0]
 
             return new_traj
 

@@ -26,14 +26,10 @@ def yaw_vp_eq(var,x,y,z,vx,vy,vz):
     t = (y_t - y) / vy_out
     vx_out = (x_t - x) / t
 
-    # eq1 = vx * (cos(yaw)**2 - e*sin(yaw)**2) - vy*sin(yaw)*cos(yaw)*(1+e) - e*vp*sin(yaw) - vx_out
-    # eq2 = -vx * sin(yaw)*cos(yaw)*(1+e) + vy*(sin(yaw)**2 - e*cos(yaw)**2) - e*vp*cos(yaw) - vy_out
+    eq1 = vx*(1-e*yaw**2) - vy*(1+e)*yaw - (1+e)*vp*yaw - vx_out
+    eq2 = -vx*(1+e)*yaw + vy*(yaw**2 - e) - (1+e)*vp - vy_out
 
-    T_EP = np.array([[-cos(yaw), -sin(yaw)], [sin(yaw), -cos(yaw)]])
-    vin = np.dot(T_EP.T, np.array([vx,vy]))
-    vout = np.array([vin[0], e*(vp-vin[1])+vp])
-
-    return np.dot(T_EP, vout) - np.array([vx_out, vy_out])
+    return np.array([eq1, eq2])
 
 def roll_vp_eq(var,x,y,z,vx,vy,vz):
     roll = var[0]
@@ -42,14 +38,10 @@ def roll_vp_eq(var,x,y,z,vx,vy,vz):
     t = (y_t - y) / vy_out
     vz_out = (z_t - t) / t - 0.5 * g * t
 
-    T_EP = np.array([[-sin(roll), -cos(roll)], [cos(roll), -sin(roll)]])
-    vin = np.dot(T_EP.T, np.array([vy,vz]))
-    vout = np.array([vin[0], e*(vp-vin[1])+vp])
+    eq1 = vy*(roll**2 - e) - vz*roll*(1+e) - (1+e)*vp - vy_out
+    eq2 = -vy*roll*(1+e) + vz*(1 - e*roll**2) - (1+e)*vp*roll - vz_out
 
-    # eq1 = vy*(sin(roll)**2 - e*cos(roll)**2) - vz*sin(roll)*cos(roll)*(1+e) - e*vp*cos(roll) - vy_out
-    # eq2 = -vy*sin(roll)*cos(roll)*(1+e) + vz*(cos(roll)**2 - e*sin(roll)**2) - e*vp*sin(roll) - vz_out
-
-    return np.dot(T_EP, vout) - np.array([vy_out, vz_out])
+    return np.array([eq1, eq2])
 
 
 def euler_to_quaternion(roll, pitch, yaw):
@@ -60,13 +52,6 @@ def euler_to_quaternion(roll, pitch, yaw):
     qw = np.cos(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) + np.sin(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
 
     return [qw, qx, qy, qz]
-
-# def quadratic(a,b,c):
-#     d = b**2 - 4*a*c
-#     if d >= 0:
-#         return (-b + math.sqrt(d)) / (2*a), (-b + math.sqrt(d)) / (2*a)
-#     else:
-#         return None, None
 
 # The method below will calculate the yaw and roll angle of the paddle, the pitch angle is not important
 #   Angles are with respect to the world frame
@@ -82,7 +67,11 @@ def angle(x,y,z,vx,vy,vz):
 
     print(" ")
 
-    return euler_to_quaternion(0,0,-3.14-roll_vp[0])
+    vp = (yaw_vp[1]+roll_vp[1])/2
+    angle1 = yaw_vp[0]+3.14
+    angle3 = roll_vp[0]-1.57
+
+    return euler_to_quaternion(angle1,0,angle3), np.array([vp*sin(angle1),-vp*cos(angle1),vp*sin(angle3)])
 
 
 def callback(msg):

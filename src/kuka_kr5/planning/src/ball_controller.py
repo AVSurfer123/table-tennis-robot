@@ -9,6 +9,7 @@ from collections import deque
 import rospy
 from ball_detection.msg import PosVelTimed
 from robot_controller import RobotController
+from paddle_angle_dummy import angle
 
 HOME_POSE = [0, 0, 1]
 HOME_ORI = [-0.00060612617037, 0.98890581114, 0.148542219849, 0.000371788566274]
@@ -24,7 +25,9 @@ def callback(msg):
         print('Moving arm to:', goal)
         # controller.hit_ball(goal, HOME_ORI)
         # time = rospy.Time.now()
-        controller.move_to_goal(*(goal + HOME_ORI), time=msg.header.stamp)
+        ori,v = angle(msg.pos.x, msg.pos.y, msg.pos.z, msg.vel.x, msg.vel.y, msg.vel.z)
+        print(ori,v)
+        controller.move_to_goal(*(goal + ori), time=msg.header.stamp,vp = v)
         # goal[1] -= .2
         # total_nsecs = time.nsecs + 1e8
         # fractional, integer = math.modf(total_nsecs/1e9)

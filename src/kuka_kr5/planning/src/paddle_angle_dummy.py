@@ -16,11 +16,8 @@ def euler_to_quaternion(roll, pitch, yaw):
 
         return [qw, qx, qy, qz]
 
-# The method below will calculate the yaw and roll angle of the paddle based on the position only, the pitch angle is not important
-#   Angles are with respect to the world frame
-#   It will just return a velocity for the paddle to move in the -y direction
+
 def angle(x,y,z,vx,vy,vz,vy_out=3.0):
-    # arguments are the end state of the incoming ball, set defualt hit back y vel to 3.0 m/s
 
     table_width = 1.525
     table_height = 0.76
@@ -39,11 +36,10 @@ def angle(x,y,z,vx,vy,vz,vy_out=3.0):
     else:
         roll = -roll_max * abs(z-mid_h) / mid_h
 
-    [qw, qx, qy, qz] = euler_to_quaternion(roll, 0, yaw)
     print("Results: ", roll/3.14*180.0, 0.0, yaw/3.14*180.0)
     print(" ")
 
-    return  [qw, qx, qy, qz]
+    return  euler_to_quaternion(-roll+3.14, 0, yaw), [0, vy_out, 0]
 
 def callback(msg):
     if msg.hittable:
