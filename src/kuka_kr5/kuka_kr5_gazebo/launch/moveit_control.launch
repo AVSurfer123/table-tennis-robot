@@ -40,7 +40,7 @@
   </node>
 
   <!-- Publish to joint_states -->
-  <rosparam file="$(find kuka_kr5_control)/config/joint_state_controller_moveit.yaml" command="load"/>
+  <rosparam file="$(find kuka_moveit_config)/config/joint_state_controller_moveit.yaml" command="load"/>
   <node name="joint_state_controller_spawner" pkg="controller_manager" type="controller_manager" args="spawn joint_state_controller" respawn="false" output="screen"/>
   
   <!-- Publish the true ball state for debugging -->
@@ -60,7 +60,7 @@
   </node> -->
 
   <!-- Controller for MoveIt -->
-  <rosparam file="$(find kuka_kr5_control)/config/arm_controller_kr5.yaml" command="load"/>
+  <rosparam file="$(find kuka_moveit_config)/config/arm_controller_kr5.yaml" command="load"/>
   <node name="arm_controller_spawner" pkg="controller_manager" type="controller_manager" args="spawn arm_controller" respawn="false" output="screen"/>
 <!-- <include file="$(find kuka_moveit_config)/launch/ros_controllers.launch"/> -->
 
