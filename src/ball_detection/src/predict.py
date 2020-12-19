@@ -177,5 +177,5 @@ class EndPosVelPrediction:
 
 if __name__ == '__main__':
 	rospy.init_node('ball_predict_node', anonymous=True)
-	predictor = EndPosVelPrediction("/ball_detection/ball_state_filtered", "/ball_detection/predicted_ball_state")
+	predictor = EndPosVelPrediction("/ball_detection/ball_kalman_filter", "/ball_detection/predicted_ball_state")
 	rospy.spin()
