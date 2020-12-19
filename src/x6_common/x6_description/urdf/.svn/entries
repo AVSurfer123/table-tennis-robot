@@ -1,55 +1,0 @@
-10
-
-dir
-978
-https://tu-darmstadt-ros-pkg.googlecode.com/svn/trunk/biorob_common/biorob_description/urdf
-https://tu-darmstadt-ros-pkg.googlecode.com/svn
-
-
-
-2013-06-17T12:23:46.969928Z
-977
-jerome.kirchhoff@googlemail.com
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-362d0299-bcd8-93f0-de3f-00335e8b5ee8
-
-biorob_ultra_x5_hg
-dir
-
-biorob_ultra_x4
-dir
-
-biorob_v3_x4
-dir
-
-biorob_ultra_x6
-dir
-
-biorob_v3_x6
-dir
-
-biorob_ultra_x4_hp
-dir
-
-biorob_ultra_x5_ug
-dir
-
-biorob_ultra_x5_ug_as_x6
-dir
-
-biorob_ultra_x5_hg_as_x4
-dir
-
