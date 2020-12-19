@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-
-<launch>
-      <include file="$(find biorob_description)/launch/xacrodisplay_common.launch">
-        <arg name="robot_model" value="biorob_v3_x6/biorob_v3_x6.urdf.xacro"/>
-      </include>
-</launch>
-
