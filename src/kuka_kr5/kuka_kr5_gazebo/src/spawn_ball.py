@@ -350,7 +350,7 @@ if __name__ == "__main__":
             vel_input = raw_input("Enter xyz velocities or 'r' for random or enter for last value {}: ".format(vel))
             if vel_input == 'r':
                 x = round(random.uniform(-0.5, 0.5), 2)
-                y = round(random.uniform(2.0, 2.75), 2)
+                y = round(random.uniform(2.0, 3.0), 2)
                 z = round(random.uniform(1.5, 2.5), 2)
                 vel = [x, y, z, 0, 0, 0]
             elif len(vel_input) > 0:

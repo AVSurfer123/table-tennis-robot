@@ -20,6 +20,12 @@ moving = False
 count = 0
 hit = False
 
+HOME_POSE = [0, 0, 1]
+HOME_ORI = [-0.00060612617037, 0.98890581114, 0.148542219849, 0.000371788566274]
+HOME = HOME_POSE + HOME_ORI
+
+moving = False
+
 def callback(msg):
     global moving, count, hit
 

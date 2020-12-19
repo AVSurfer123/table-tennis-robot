@@ -144,7 +144,7 @@ class EndPosVelPrediction:
 			
 			# Quadratic equation z_end - table_heigh - ball_radius = v_z t + .5 a * t^2
 			discrim = math.sqrt(vz_out ** 2 + 2*self.g*(z_end - self.table_height - self.ball_radius))
-			time1, time2 = -(-vz_out + discrim)/self.g, -(-vz_out - discrim)/self.g
+			time1, time2 = (-vz_out + discrim)/self.g, (-vz_out - discrim)/self.g
 			t_hit = None
 			choose1, choose2 = True, True
 			# time of hit must occur after bounce
