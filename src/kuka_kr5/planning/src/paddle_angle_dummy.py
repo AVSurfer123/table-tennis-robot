@@ -28,17 +28,16 @@ def angle(x,y,z,vx,vy,vz,vy_out=3.0):
     roll_max = 30/180.0*3.14
 
     if x >= 0:
-        yaw = -yaw_max * abs(x) / (table_width/2)
+        yaw = -yaw_max * abs(x) / (table_width/2) + vx * 0.002
     else:
-        yaw = yaw_max * abs(x) / (table_width/2)
+        yaw = yaw_max * abs(x) / (table_width/2) - vx * 0.002
     # if z >= mid_h:
     #     roll = roll_max * abs(z-mid_h) / mid_h
     # else:
     #     roll = -roll_max * abs(z-mid_h) / mid_h
-    roll = -roll_max * abs(max_height - z) / (max_height - table_height)
+    roll = -roll_max * abs(max_height - z) / (max_height - table_height) + vy * 0.02
 
     print("Results: ", roll/3.14*180.0, 0.0, yaw/3.14*180.0)
-    print(" ")
 
     return  euler_to_quaternion(-3.14+yaw, 0, roll), [roll, 0, yaw]
 

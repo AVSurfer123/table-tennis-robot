@@ -23,11 +23,13 @@ hit = False
 def callback(msg):
     global moving, count, hit
 
+    # print("hittable, moving, count, hit: ", msg.hittable, moving, count, hit)
+
     if msg.vel.y > 0 and not moving:
         hit = False
     if not msg.hittable:
         count = 0
-    else:
+    elif msg.hittable:
         count = count + 1
 
     if msg.hittable and count == 2 and not hit:
@@ -52,6 +54,7 @@ def callback(msg):
         #     predTime = msg.header.stamp.secs + msg.header.stamp.nsecs/1e9
         
         # distance from the ball predction point to the end of hit back trajectory
+        # dist = 0.7 / msg.vel.y
         dist = 0.25
 
         roll = euler[0]
@@ -59,8 +62,18 @@ def callback(msg):
         sin = math.sin
         cos = math.cos
         goal = [msg.pos.x+dist*sin(yaw)*cos(roll), msg.pos.y-dist*cos(yaw)*cos(roll), msg.pos.z-dist*sin(roll)]
-        print("goal_hit:", goal)
+        vel_norm = np.linalg.norm(np.array([msg.vel.x, msg.vel.y, msg.vel.z]))
+        speed = 22 / msg.vel.y
+        # time_os = 0.35 / vel_norm
+
+        # print("distance of path: ", dist)
+        # print("goal_hit:", goal)
+        # print("motor speed: ", speed)
+        # print("time offset: ", time_os)
+
+        controller_hit.speed = speed
         controller_hit.move_to_goal(*(goal + ori), time=msg.header.stamp+rospy.Duration(0.1))
+        rospy.sleep(0.1)
         # goal[1] -= .2
         # total_nsecs = time.nsecs + 1e8
         # fractional, integer = math.modf(total_nsecs/1e9)
@@ -74,6 +87,7 @@ def callback(msg):
     # elif moving:
     #     moving = False
     #     controller.move_to_goal(*HOME)
+    
 
 if __name__ == '__main__':
     rospy.init_node('ball_controller')
