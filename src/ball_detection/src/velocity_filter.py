@@ -17,7 +17,10 @@ X_VAR = np.array([
     [0, .04]
 ])
 
-Y_VAR = np.array(.4)
+Y_VAR = np.array([
+    [.4, 0],
+    [0, .4]
+])
 
 def kalman(pos, time, direction):
     if direction == 'x' or direction == 'y':
@@ -27,14 +30,14 @@ def kalman(pos, time, direction):
     else:
         raise ValueError("direction is not one of x, y, z")
 
-    x = np.array([pos[0], (pos[1] - pos[0])/(time[1] - time[0])])
-    print("Start:", x)
+    x = np.array([[pos[0]], [(pos[1] - pos[0])/(time[1] - time[0])]])
+
     sigma = np.array([
         [.04, 0],
         [0, .4]
     ])
 
-    for i in range(1, len(time)):
+    for i in range(1, len(time)-1):
         t = time[i] - time[i-1]
         A = np.array([
             [1, t],
@@ -44,7 +47,10 @@ def kalman(pos, time, direction):
             [.5 * acc * t * t],
             [acc * t]
         ])
-        C = np.array([[1., 0]])
+        C = np.array([
+            [1., 0],
+            [0, 1]
+        ])
 
         # Predict 1 timestep into future
         x = A.dot(x) + B
@@ -54,7 +60,8 @@ def kalman(pos, time, direction):
         K = sigma.dot(C.T).dot(np.linalg.inv(C.dot(sigma).dot(C.T) + Y_VAR))
         
         # Update current estimates of state and variance using observation
-        x = x + K.dot(pos[i] - C.dot(x))
+        y = np.array([[pos[i]], [(pos[i+1] - pos[i])/(time[i+1] - time[i])]])
+        x = x + K.dot(y - C.dot(x))
         sigma = (np.eye(len(x)) - K.dot(C)).dot(sigma)
 
     return x, sigma
@@ -132,15 +139,17 @@ def vel_callback(pose_msg):
         setattr(filtered.vel, direction, vel_filtered[-1])
 
         state_kalman, _ = kalman(pos[i], time, direction)
+        
         setattr(kalman_msg.pos, direction, state_kalman[0, 0])
-        setattr(kalman_msg.vel, direction, state_kalman[0, 1])
+        setattr(kalman_msg.vel, direction, state_kalman[1, 0])
         print("Position delta:", pos_filtered[-1] - state_kalman[0, 0])
-        print("Velocity delta:", vel_filtered[-1] - state_kalman[0, 1])
+        print("Velocity delta:", vel_filtered[-1] - state_kalman[1, 0])
 
     vel_pub.publish(filtered)
     kalman_pub.publish(kalman_msg)
 
     filtered = kalman_msg
+    print(filtered)
     # print('Filtered position:', filtered.pos.x, filtered.pos.y, filtered.pos.z)
     # print("Filtered velocity:", filtered.vel.x, filtered.vel.y, filtered.vel.z)
     
