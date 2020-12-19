@@ -172,13 +172,17 @@ class RobotController:
 
             for i in range(n_points):
                 new_traj.joint_trajectory.points.append(JointTrajectoryPoint())
-                new_traj.joint_trajectory.points[i].time_from_start = traj.joint_trajectory.points[i].time_from_start / self.speed
+                time_step = traj.joint_trajectory.points[i].time_from_start / self.speed
+                new_traj.joint_trajectory.points[i].time_from_start = time_step
                 if len(traj.joint_trajectory.points[i].velocities) != n_joints:
                     print(traj.joint_trajectory.points[i].velocities)
                 for j in range(len(traj.joint_trajectory.points[i].velocities)):
                     new_traj.joint_trajectory.points[i].velocities.append(traj.joint_trajectory.points[i].velocities[j] * self.speed)
                     # new_traj.joint_trajectory.points[i].accelerations.append(traj.joint_trajectory.points[i].accelerations[j] * self.speed * self.speed)
                     new_traj.joint_trajectory.points[i].positions.append(traj.joint_trajectory.points[i].positions[j])
+
+            if time is not None:
+                new_traj.joint_trajectory.header.stamp = time - new_traj.joint_trajectory.points[-1].time_from_start - rospy.Duration(0.0)
 
             return new_traj
 
