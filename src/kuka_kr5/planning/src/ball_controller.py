@@ -39,17 +39,17 @@ def callback(msg):
         # controller.hit_ball(goal, HOME_ORI)
         # time = rospy.Time.now()
         ori,euler = angle(msg.pos.x, msg.pos.y, msg.pos.z, msg.vel.x, msg.vel.y, msg.vel.z)
-        controller.move_to_goal(*(goal + ori), time=msg.header.stamp)
+        controller.move_to_goal(*(goal + ori))
 
-        time = rospy.Time.now()
-        curTime = time.secs + time.nsecs/1e9
-        predTime = msg.header.stamp.secs + msg.header.stamp.nsecs/1e9
-        adv = 0.15*np.linalg.norm(np.array(goal)-np.array(HOME_POSE))
-        print("adv: ", adv)
-        while curTime <= predTime - adv:
-            time = rospy.Time.now()
-            curTime = time.secs + time.nsecs/1e9
-            predTime = msg.header.stamp.secs + msg.header.stamp.nsecs/1e9
+        # time = rospy.Time.now()
+        # curTime = time.secs + time.nsecs/1e9
+        # predTime = msg.header.stamp.secs + msg.header.stamp.nsecs/1e9
+        # adv = 0.15*np.linalg.norm(np.array(goal)-np.array(HOME_POSE))
+        # print("adv: ", adv)
+        # while curTime <= predTime - adv:
+        #     time = rospy.Time.now()
+        #     curTime = time.secs + time.nsecs/1e9
+        #     predTime = msg.header.stamp.secs + msg.header.stamp.nsecs/1e9
         
         # distance from the ball predction point to the end of hit back trajectory
         dist = 0.25
@@ -60,7 +60,7 @@ def callback(msg):
         cos = math.cos
         goal = [msg.pos.x+dist*sin(yaw)*cos(roll), msg.pos.y-dist*cos(yaw)*cos(roll), msg.pos.z-dist*sin(roll)]
         print("goal_hit:", goal)
-        controller_hit.move_to_goal(*(goal + ori), time=msg.header.stamp)
+        controller_hit.move_to_goal(*(goal + ori), time=msg.header.stamp+rospy.Duration(0.1))
         # goal[1] -= .2
         # total_nsecs = time.nsecs + 1e8
         # fractional, integer = math.modf(total_nsecs/1e9)

@@ -133,7 +133,7 @@ class RobotController:
         if not self.group.execute(traj, True):
             print("Execution failed")
 
-    def plan_to_goal(self, x, y, z, or_x=0.0, or_y=-1.0, or_z=0.0, or_w=0.0, start=None, time=None, vp = [0, 0, 0]):
+    def plan_to_goal(self, x, y, z, or_x=0.0, or_y=-1.0, or_z=0.0, or_w=0.0, start=None, time=None):
         try:
             goal = PoseStamped()
             goal.header.frame_id = "world"
@@ -172,7 +172,8 @@ class RobotController:
 
             for i in range(n_points):
                 new_traj.joint_trajectory.points.append(JointTrajectoryPoint())
-                new_traj.joint_trajectory.points[i].time_from_start = traj.joint_trajectory.points[i].time_from_start / self.speed
+                time_step = traj.joint_trajectory.points[i].time_from_start / self.speed
+                new_traj.joint_trajectory.points[i].time_from_start = time_step
                 if len(traj.joint_trajectory.points[i].velocities) != n_joints:
                     print(traj.joint_trajectory.points[i].velocities)
                 for j in range(len(traj.joint_trajectory.points[i].velocities)):
@@ -180,24 +181,8 @@ class RobotController:
                     # new_traj.joint_trajectory.points[i].accelerations.append(traj.joint_trajectory.points[i].accelerations[j] * self.speed * self.speed)
                     new_traj.joint_trajectory.points[i].positions.append(traj.joint_trajectory.points[i].positions[j])
 
-            # if vp[0] != 0 or vp[1] != 0 or vp[2] != 0:
-            #     goal.pose.position.y = y - 0.1
-            #     self.group.set_pose_target(goal)
-            #     traj_hit = self.group.plan()
-
-            #     n_points = len(traj_hit.joint_trajectory.points)
-            #     print("Executing %d point trajectory_hit" % n_points)
-
-            #     for i in range(n_points):
-            #         new_traj.joint_trajectory.points.append(JointTrajectoryPoint())
-            #         new_traj.joint_trajectory.points[-1].time_from_start = traj_hit.joint_trajectory.points[i].time_from_start / self.speed
-            #         if len(traj_hit.joint_trajectory.points[i].velocities) != n_joints:
-            #             print(traj_hit.joint_trajectory.points[i].velocities)
-            #         for j in range(len(traj_hit.joint_trajectory.points[i].velocities)):
-            #             new_traj.joint_trajectory.points[-1].velocities.append(traj_hit.joint_trajectory.points[i].velocities[j] * self.speed)
-            #             # new_traj.joint_trajectory.points[i].accelerations.append(traj_hit.joint_trajectory.points[i].accelerations[j] * self.speed * self.speed)
-            #             new_traj.joint_trajectory.points[-1].positions.append(traj_hit.joint_trajectory.points[i].positions[j])
-            #     print(new_traj.joint_trajectory.points[-1].positions)
+            if time is not None:
+                new_traj.joint_trajectory.header.stamp = time - new_traj.joint_trajectory.points[-1].time_from_start - rospy.Duration(0.0)
 
             return new_traj
 
