@@ -1,5 +1,5 @@
 # table-tennis-robot
-A robot that can play table tennis, our final project for Berkeley EECS 106A
+A robot that can play table tennis, our final project for Berkeley EECS 106A. Please check out [our wiki](https://github.com/AVSurfer123/table-tennis-robot/wiki) for an in-depth report and discussion of what we did.
 
 ## Installation
 
@@ -17,7 +17,7 @@ Then to begin the vision pipeline, do
 
     roslaunch ball_detection vision_pipeline.launch
 
-Then to begin the ball controller, do
+Then to begin the robot arm controller, do
 
     rosrun planning ball_controller.py
 
